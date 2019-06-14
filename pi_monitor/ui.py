@@ -16,15 +16,24 @@ class Thumb_Controller:
 
     def on_host_added(self, host_idx):
         logger.debug(f"on_host_added({host_idx})")
-        host = self.controller.hosts.values()[host_idx]
+        host = self.controller[host_idx]
         host_thumb = self.thumb_for_host(host)
         self.gui_parent.insert(host_idx, host_thumb)
 
     def on_host_removed(self, host_idx):
+        logger.debug(f"on_host_removed({host_idx})")
         del self.gui_parent[host_idx]
 
     def on_host_changed(self, host_idx):
-        pass
+        logger.debug(f"on_host_changed({host_idx})")
+        host = self.controller[host_idx]
+        thumb = self.gui_parent[host_idx]
+        if host.is_linked and host.is_available:
+            thumb.on_color[:] = (0.0, 1.0, 0.0, 0.8)
+            thumb.status_text = " "
+        elif host.is_linked and not host.is_available:
+            thumb.on_color[:] = (1.0, 0.0, 0.0, 0.8)
+            thumb.status_text = ""
 
     def cleanup(self):
         self.gui_parent = None
@@ -32,9 +41,7 @@ class Thumb_Controller:
 
     def thumb_for_host(self, host):
         def link_host(turn_on):
-            print(f"== {turn_on} {host}")
-            if turn_on:
-                self.controller.link(host)
+            self.controller.link(host)
 
         host_thumb = ui.Thumb(
             "is_linked",
@@ -43,5 +50,5 @@ class Thumb_Controller:
             label=host.name[:2],
             hotkey=host.name[0],
         )
-        host_thumb.on_color[:] = (1, 0.0, 0.0, 0.8)
+        # host_thumb.on_color[:] = (1, 0.0, 0.0, 0.8)
         return host_thumb

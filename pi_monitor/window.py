@@ -10,13 +10,14 @@ from .event_loop import WindowEventLoop
 class Window:
     scroll_factor = 10.0
 
-    def __init__(self, frame_rate: float, callables: T.List[T.Callable] = ...):
+    def __init__(self, texture, frame_rate: float, callables: T.List[T.Callable] = ...):
         if callables is ...:
             callables = []
 
-        self.texture = None
+        self.texture = texture
 
-        callables.extend([self.draw_texture, glfw.glfwPollEvents, self.update_gui])
+        callables.insert(0, self.draw_texture)
+        callables.extend([glfw.glfwPollEvents, self.update_gui])
         self._window = None
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
@@ -24,10 +25,8 @@ class Window:
         gl_utils.glViewport(0, 0, *self.window_size)
         gl_utils.glFlush()
         gl_utils.make_coord_system_norm_based()
-        cygl.utils.draw_gl_texture(self.texture)
-        gl_utils.make_coord_system_pixel_based(
-            (self.window_size[1], self.window_size[0], 3)
-        )
+        self.texture.draw()
+        gl_utils.make_coord_system_pixel_based(self.texture.shape)
 
     def update_gui(self):
         try:
