@@ -5,9 +5,38 @@ from pyglui import ui, cygl
 from . import gl_utils
 from . import glfw
 from .event_loop import WindowEventLoop
+from .observable import Observable
 
 
-class Window:
+def normalize(pos, size, flip_y=False):
+    """
+    normalize return as float
+    """
+    width, height = size
+    x = pos[0]
+    y = pos[1]
+    x /= float(width)
+    y /= float(height)
+    if flip_y:
+        return x, 1 - y
+    return x, y
+
+
+def denormalize(pos, size, flip_y=False):
+    """
+    denormalize
+    """
+    width, height = size
+    x = pos[0]
+    y = pos[1]
+    x *= width
+    if flip_y:
+        y = 1 - y
+    y *= height
+    return x, y
+
+
+class Window(Observable):
     scroll_factor = 10.0
 
     def __init__(self, texture, frame_rate: float, callables: T.List[T.Callable] = ...):
@@ -35,6 +64,7 @@ class Window:
             clipboard = ""
         self.gui.update_clipboard(clipboard)
         user_input = self.gui.update()
+        self.process_unconsumed_user_input(user_input)
         if user_input.clipboard and user_input.clipboard != clipboard:
             # only write to clipboard if content changed
             glfw.glfwSetClipboardString(self._window, user_input.clipboard.encode())
@@ -121,5 +151,14 @@ class Window:
         self.gui_user_scale = new_scale
         self.on_resize(self._window, *self.window_size)
 
-    # def set_window_size():
-    #     glfw.glfwSetWindowSize(main_window, *window_size_default)
+    def process_unconsumed_user_input(self, user_input):
+        x, y = glfw.glfwGetCursorPos(self._window)
+        pos = x * self.hdpi_factor, y * self.hdpi_factor
+        pos = normalize(pos, self.window_size)
+        # Position in img pixels
+        pos = denormalize(pos, self.texture.shape[:2])
+        for button, action, mods in user_input.buttons:
+            self.on_click(pos, button, action)
+
+    def on_click(self, pos, button, action):
+        pass

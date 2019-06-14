@@ -1,12 +1,15 @@
 import logging
+
 from pyglui import ui
 
+from . import glfw
+from .filter import OffsetFilter
 from .models import Host_Controller
 
 logger = logging.getLogger(__name__)
 
 
-class Thumb_Controller:
+class HostViewController:
     def __init__(self, gui_parent, controller: Host_Controller):
         self.gui_parent = gui_parent
         controller.add_observer("on_host_added", self.on_host_added)
@@ -52,3 +55,21 @@ class Thumb_Controller:
         )
         # host_thumb.on_color[:] = (1, 0.0, 0.0, 0.8)
         return host_thumb
+
+
+class OffsetFilterViewController:
+    def __init__(self, gui_parent, controller: OffsetFilter):
+        self.controller = controller
+        gui_parent.append(
+            ui.Thumb("reset", getter=lambda: False, setter=self.reset, label="R")
+        )
+
+    def cleanup(self):
+        self.controller = None
+
+    def reset(self, should_reset):
+        self.controller.offset = (0.0, 0.0)
+
+    def on_click(self, pos, button, action):
+        if action == glfw.GLFW_PRESS and button == glfw.GLFW_MOUSE_BUTTON_LEFT:
+            self.controller.update_offset(pos)

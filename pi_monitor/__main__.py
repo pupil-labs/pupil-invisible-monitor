@@ -1,21 +1,27 @@
 import logging
+from .filter import OffsetFilter
 from .models import Host_Controller
 from .overlay import GazeOverlay
 from .texture import PITextureController
-from .ui import Thumb_Controller
+from .ui import HostViewController, OffsetFilterViewController
 from .window import Window
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("pyre").setLevel(logging.WARNING)
 
 try:
-    gaze_overlay = GazeOverlay()
     host_controller = Host_Controller()
-    texture_controller = PITextureController()
+
+    offset_filter = OffsetFilter()
+    host_controller.add_observer("on_recent_gaze", offset_filter.filter_gaze)
+
     # frame observer
+    texture_controller = PITextureController()
     host_controller.add_observer("on_host_linked", texture_controller.reset)
     host_controller.add_observer("on_recent_frame", texture_controller.update)
-    host_controller.add_observer("on_recent_gaze", gaze_overlay.update)
+
+    gaze_overlay = GazeOverlay()
+    offset_filter.add_observer("on_filtered_gaze", gaze_overlay.update)
 
     win = Window(
         texture_controller,
@@ -23,7 +29,11 @@ try:
         callables=[host_controller.poll_events, host_controller.fetch_recent_data],
     )
     win.open()
-    thumb_controller = Thumb_Controller(
+    offset_filter_view_controller = OffsetFilterViewController(
+        gui_parent=win.gui, controller=offset_filter
+    )
+    win.add_observer("on_click", offset_filter_view_controller.on_click)
+    host_view_controller = HostViewController(
         gui_parent=win.quickbar, controller=host_controller
     )
 
@@ -33,4 +43,5 @@ except KeyboardInterrupt:
 finally:
     win.close()
     host_controller.cleanup()
-    thumb_controller.cleanup()
+    host_view_controller.cleanup()
+    offset_filter_view_controller.cleanup()

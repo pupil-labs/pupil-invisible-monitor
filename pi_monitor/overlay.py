@@ -5,7 +5,6 @@ class GazeOverlay:
     size = 70
 
     def update(self, gaze):
-        print(gaze)
         draw_circle(
             center_position=gaze,
             radius=self.size + 75,
