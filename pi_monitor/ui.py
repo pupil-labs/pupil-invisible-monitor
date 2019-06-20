@@ -8,6 +8,8 @@ from .models import Host_Controller
 
 logger = logging.getLogger(__name__)
 
+THUMB_SETTINGS = dict(label_font="opensans", label_offset_size=0)
+
 
 class HostViewController:
     def __init__(self, gui_parent, controller: Host_Controller):
@@ -31,11 +33,17 @@ class HostViewController:
         logger.debug(f"on_host_changed({host_idx})")
         host = self.controller[host_idx]
         thumb = self.gui_parent[host_idx]
-        if host.is_linked and host.is_available:
-            thumb.on_color[:] = (0.0, 1.0, 0.0, 0.8)
+        if host.is_linked and host.is_in_bad_state:
+            iris_dark_blue = 0.157, 0.208, 0.576, 1.0
+            thumb.on_color[:] = iris_dark_blue
+            thumb.status_text = "!"
+        elif host.is_linked and host.is_available:
+            iris_green = 0.024, 0.631, 0.145, 1.0
+            thumb.on_color[:] = iris_green
             thumb.status_text = " "
         elif host.is_linked and not host.is_available:
-            thumb.on_color[:] = (1.0, 0.0, 0.0, 0.8)
+            retina_red = 0.957, 0.263, 0.212, 1.0
+            thumb.on_color[:] = retina_red
             thumb.status_text = ""
 
     def cleanup(self):
@@ -52,8 +60,8 @@ class HostViewController:
             setter=link_host,
             label=host.name[:2],
             hotkey=host.name[0],
+            **THUMB_SETTINGS,
         )
-        # host_thumb.on_color[:] = (1, 0.0, 0.0, 0.8)
         return host_thumb
 
 
@@ -61,7 +69,13 @@ class OffsetFilterViewController:
     def __init__(self, gui_parent, controller: OffsetFilter):
         self.controller = controller
         gui_parent.append(
-            ui.Thumb("reset", getter=lambda: False, setter=self.reset, label="R")
+            ui.Thumb(
+                "reset",
+                getter=lambda: False,
+                setter=self.reset,
+                label="R",
+                **THUMB_SETTINGS,
+            )
         )
 
     def cleanup(self):

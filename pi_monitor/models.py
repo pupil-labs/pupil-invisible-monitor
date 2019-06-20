@@ -20,6 +20,7 @@ class Host:
         self.sensor_uuids = {}
         self.sensors = {}
         self.is_linked = False
+        self.is_in_bad_state = False
 
     def __str__(self):
         return f"<{type(self).__name__} {self.name}>"
@@ -184,15 +185,20 @@ class Host_Controller(Observable):
         self.on_host_removed(host_idx)
 
     def fetch_recent_data(self):
-        for host in self.hosts():
+        for idx, host in enumerate(self.hosts()):
             if host.is_linked:
                 host.poll_notifications()
-                frame = host.fetch_recent_frame()
-                gaze = host.fetch_recent_gaze()
-                if frame is not None:
-                    self.on_recent_frame(frame)
-                if gaze:
-                    self.on_recent_gaze(gaze)
+                try:
+                    frame = host.fetch_recent_frame()
+                    if frame is not None:
+                        self.on_recent_frame(frame)
+
+                    gaze = host.fetch_recent_gaze()
+                    if gaze:
+                        self.on_recent_gaze(gaze)
+                except ndsi.sensor.NotDataSubSupportedError:
+                    self.is_in_bad_state = True
+                    self.on_host_changed(idx)
 
     def on_host_added(self, host_idx):
         pass
