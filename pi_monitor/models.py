@@ -109,7 +109,7 @@ class Host:
 
 
 class Host_Controller(Observable):
-    sensor_types = ("video", "gaze")
+    sensor_types = ("video", "gaze", "imu")
 
     def __init__(self):
         self._hosts = SortedHostDict()
