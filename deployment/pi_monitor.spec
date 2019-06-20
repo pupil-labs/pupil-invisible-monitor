@@ -33,8 +33,15 @@ pyglui_hidden_imports = [
 ]
 
 binaries = []
+datas = [
+    (ui.get_opensans_font_path(), "pyglui/"),
+    (ui.get_roboto_font_path(), "pyglui/"),
+    (ui.get_pupil_icons_font_path(), "pyglui/"),
+]
+
 if platform.system() == "Darwin":
     binaries.append(("/usr/local/lib/libglfw.dylib", "."))
+    datas.append(("icons/*.icns", "."))
 elif platform.system() == "Linux":
     binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
 
@@ -46,12 +53,7 @@ a = Entrypoint(
     "pi_monitor",
     # pathex=["/Users/papr/work/pi_monitor/pi_monitor/"],
     binaries=binaries,
-    datas=[
-        (ui.get_opensans_font_path(), "pyglui/"),
-        (ui.get_roboto_font_path(), "pyglui/"),
-        (ui.get_pupil_icons_font_path(), "pyglui/"),
-        ("icons/*.icns", "."),
-    ],
+    datas=datas,
     hiddenimports=["pyzmq", "pyre"] + pyglui_hidden_imports,
     # hookspath=[],
     # runtime_hooks=[],
