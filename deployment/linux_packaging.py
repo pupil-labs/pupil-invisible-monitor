@@ -10,13 +10,16 @@ def deb_package():
     # lets build the structure for our deb package.
     dist_root = Path("dist").resolve()
     deb_root = Path(f"pi_monitor_linux_os_x64_{app_version}").resolve()
+    if deb_root.exists():
+        shutil.rmtree(str(deb_root))
+
     control = deb_root / "DEBIAN" / "control"
     desktop = deb_root / "usr" / "share" / "applications" / "pi_monitor.desktop"
     starter = deb_root / "usr" / "local" / "bin" / "pi_monitor"
     opt_dir = deb_root / "opt"
     ico_dir = deb_root / "usr" / "share" / "icons" / "hicolor" / "scalable" / "apps"
 
-    control.parent.mkdir(mode=0o755, exist_ok=True)
+    control.parent.mkdir(mode=0o755, exist_ok=True, parents=True)
     starter.parent.mkdir(mode=0o755, exist_ok=True, parents=True)
     desktop.parent.mkdir(mode=0o755, exist_ok=True, parents=True)
     ico_dir.mkdir(mode=0o755, exist_ok=True, parents=True)
@@ -25,7 +28,7 @@ def deb_package():
     with control.open("w") as f:
         dist_size = sum(f.stat().st_size for f in dist_root.rglob("*"))
         content = f"""\
-Package: pi_monitor
+Package: pi-monitor
 Version: {app_version}
 Architecture: amd64
 Maintainer: Pupil Labs <info@pupil-labs.com>
@@ -68,8 +71,8 @@ Exec=x-terminal-emulator -e pi_monitor"""
     desktop.chmod(0o644)
 
     svg_file_name = "PPL-Capture.svg"
-    src_path = dist_root / svg_file_name
-    dst_path = dist_root / svg_file_name
+    src_path = dist_root / "pi_monitor" / svg_file_name
+    dst_path = ico_dir / svg_file_name
     shutil.copy(str(src_path), str(dst_path))
     dst_path.chmod(0o755)
 
