@@ -65,6 +65,25 @@ a = Entrypoint(
     # cipher=block_cipher,
     # noarchive=False,
 )
+
+blacklist = []
+if platform.system() == "Linux":
+    blacklist += [
+        # libc is also not meant to travel with the bundle.
+        # Otherwise pyre.helpers with segfault.
+        "libc.so",
+        # libstdc++ is also not meant to travel with the bundle.
+        # Otherwise nvideo opengl drivers will fail to load.
+        "libstdc++.so",
+        # required for 14.04 16.04 interoperability.
+        "libgomp.so.1",
+        # required for 17.10 interoperability.
+        "libdrm.so.2",
+    ]
+
+binaries = list(b for b in a.binaries if b[0] not in blacklist)
+print(f"Removed {len(a.binaries) - len(binaries)} blacklisted binaries")
+
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
@@ -79,7 +98,7 @@ exe = EXE(
     console=True,
 )
 coll = COLLECT(
-    exe, a.binaries, a.zipfiles, a.datas, strip=False, upx=True, name="pi_monitor"
+    exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name="pi_monitor"
 )
 
 app_version = pkg_resources.get_distribution("pi_monitor").version
