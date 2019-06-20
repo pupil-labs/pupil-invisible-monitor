@@ -1,12 +1,14 @@
 # pi_monitor
 Stand alone desktop app to monitor present Pupil Invisible Companions.
 
-## Requirements
+## Installation from source
 
 ```
-pyglui >= 1.24
-ndsi >= 0.5
-cv2
-numpy
-OpenGL
+pip install .
+```
+
+## Run as Python module
+
+```sh
+python -m pi_monitor
 ```

@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import cv2
+from PIL import Image
 
 from pyglui.cygl.utils import Named_Texture
 
@@ -42,6 +42,9 @@ class PITextureController:
 
     def reset(self):
         ph_path = placeholder_path()
-        ph_bgr = cv2.imread(ph_path)
+        with Image.open(ph_path) as im:
+            im = im.convert("RGB")
+            r, g, b = im.split()
+            ph_bgr = np.array(Image.merge("RGB", (b, g, r)))
         self._texture.update_from_ndarray(ph_bgr)
         self.shape = ph_bgr.shape

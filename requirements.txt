@@ -1,0 +1,5 @@
+pyglui >= 1.24
+ndsi >= 0.5
+Pillow
+numpy
+PyOpenGL
