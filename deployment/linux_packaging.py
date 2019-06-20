@@ -62,6 +62,7 @@ Icon=PPL-Capture
 Categories=Application;
 Name[en_US]=PI Monitor
 Actions=Terminal;
+StartupWMClass=PI Monitor
 
 [Desktop Action Terminal]
 Name=Open in Terminal
