@@ -29,7 +29,11 @@ def main():
         win = Window(
             texture_controller,
             frame_rate=60.0,
-            callables=[host_controller.poll_events, host_controller.fetch_recent_data],
+            callables=[
+                host_controller.poll_events,
+                host_controller.fetch_recent_data,
+                gaze_overlay.draw,
+            ],
         )
         win.open()
         offset_filter_view_controller = OffsetFilterViewController(
