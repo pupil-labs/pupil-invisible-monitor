@@ -1,9 +1,10 @@
 from setuptools import setup
 
+from deployment.version_utils import get_version
 
 setup(
     name="pi_monitor",
-    version="1",
+    version=str(get_version()),
     license="MIT",
     packages=["pi_monitor"],
     zip_safe=False,

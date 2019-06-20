@@ -2,8 +2,11 @@ import shutil
 from pathlib import Path
 from subprocess import call
 
+from version_utils import pupil_version
 
-def deb_package(app_version):
+
+def deb_package():
+    app_version = pupil_version()
     # lets build the structure for our deb package.
     dist_root = Path("dist").resolve()
     deb_root = Path(f"pi_monitor_linux_os_x64_{app_version}").resolve()
@@ -86,7 +89,4 @@ Exec=x-terminal-emulator -e pi_monitor"""
 
 
 if __name__ == "__main__":
-    import pkg_resources
-
-    app_version = pkg_resources.get_distribution("pi_monitor").version
-    deb_package(app_version)
+    deb_package()
