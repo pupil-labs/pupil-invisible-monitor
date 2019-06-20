@@ -83,3 +83,10 @@ Exec=x-terminal-emulator -e pi_monitor"""
     opt_dir.chmod(0o755)
 
     call(f"fakeroot dpkg-deb --build {deb_root}", shell=True)
+
+
+if __name__ == "__main__":
+    import pkg_resources
+
+    app_version = pkg_resources.get_distribution("pi_monitor").version
+    deb_package(app_version)
