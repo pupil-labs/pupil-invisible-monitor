@@ -5,8 +5,6 @@ import platform
 import pkg_resources
 from pyglui import ui
 
-from linux_packaging import deb_package
-
 block_cipher = None
 
 
@@ -54,7 +52,7 @@ a = Entrypoint(
     "pi-monitor",
     "console_scripts",
     "pi_monitor",
-    # pathex=["/Users/papr/work/pi_monitor/pi_monitor/"],
+    pathex=["/Users/papr/work/pi_monitor/deployment/"],
     binaries=binaries,
     datas=datas,
     hiddenimports=["pyzmq", "pyre"] + pyglui_hidden_imports,
@@ -93,4 +91,6 @@ app = BUNDLE(
 )
 
 if platform.system() == "Linux":
+    from linux_packaging import deb_package
+
     deb_package(app_version)
