@@ -1,5 +1,6 @@
 # -*- mode: python -*-
 
+import pathlib
 import platform
 
 import pkg_resources
@@ -52,7 +53,7 @@ a = Entrypoint(
     "pi-monitor",
     "console_scripts",
     "pi_monitor",
-    pathex=["/Users/papr/work/pi_monitor/deployment/"],
+    pathex=[pathlib.Path.cwd()],
     binaries=binaries,
     datas=datas,
     hiddenimports=["pyzmq", "pyre"] + pyglui_hidden_imports,
