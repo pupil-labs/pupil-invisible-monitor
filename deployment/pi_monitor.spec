@@ -1,6 +1,8 @@
 # -*- mode: python -*-
 
 import pkg_resources
+import platform
+
 
 block_cipher = None
 
@@ -30,6 +32,12 @@ pyglui_hidden_imports = [
     "cysignals",
 ]
 
+binaries = []
+if platform.system() == "Darwin":
+    binaries.append(("/usr/local/lib/libglfw.dylib", "."))
+elif platform.system() == "Linux":
+    binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
+
 from pyglui import ui
 
 a = Entrypoint(
@@ -37,7 +45,7 @@ a = Entrypoint(
     "console_scripts",
     "pi_monitor",
     # pathex=["/Users/papr/work/pi_monitor/pi_monitor/"],
-    binaries=[("/usr/local/lib/libglfw.dylib", ".")],
+    binaries=binaries,
     datas=[
         (ui.get_opensans_font_path(), "pyglui/"),
         (ui.get_roboto_font_path(), "pyglui/"),
