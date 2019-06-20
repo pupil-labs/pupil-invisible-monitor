@@ -33,8 +33,7 @@ Version: {app_version}
 Architecture: amd64
 Maintainer: Pupil Labs <info@pupil-labs.com>
 Priority: optional
-Description: PI Monitor is the easy way to preview scene video
- and gaze streams of your Pupil Invisible devices.
+Description: PI Monitor is the easy way to preview scene video and gaze streams of your Pupil Invisible devices.
 Installed-Size: {dist_size / 1024}
 """
         f.write(content)
@@ -51,9 +50,9 @@ exec /opt/pi_monitor/pi_monitor "$@"'''
 
     # .desktop entry
     with desktop.open("w") as f:
-        content = """\
+        content = f"""\
 [Desktop Entry]
-Version=1.0
+Version={app_version}
 Type=Application
 Name=PI Monitor
 Comment=Preview Pupil Invisible data streams

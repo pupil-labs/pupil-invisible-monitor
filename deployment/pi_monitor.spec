@@ -112,5 +112,4 @@ app = BUNDLE(
 
 if platform.system() == "Linux":
     from linux_packaging import deb_package
-
-    deb_package(app_version)
+    deb_package()
