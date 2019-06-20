@@ -3,19 +3,10 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 
 from pyglui.cygl.utils import Named_Texture
 
 logger = logging.getLogger(__name__)
-
-
-def placeholder_path():
-    file_name = "placeholder.png"
-    if getattr(sys, "frozen", False):
-        return str(Path(sys._MEIPASS) / file_name)
-    else:
-        return str(Path(__file__).parent / file_name)
 
 
 class PITextureController:
@@ -41,10 +32,6 @@ class PITextureController:
             self._texture.draw()
 
     def reset(self):
-        ph_path = placeholder_path()
-        with Image.open(ph_path) as im:
-            im = im.convert("RGB")
-            r, g, b = im.split()
-            ph_bgr = np.array(Image.merge("RGB", (b, g, r)))
-        self._texture.update_from_ndarray(ph_bgr)
-        self.shape = ph_bgr.shape
+        placeholder = np.ones((1, 1, 3), dtype=np.uint8) * 158
+        self._texture.update_from_ndarray(placeholder)
+        self.shape = placeholder.shape
