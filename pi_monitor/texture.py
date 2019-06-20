@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -7,6 +8,14 @@ import cv2
 from pyglui.cygl.utils import Named_Texture
 
 logger = logging.getLogger(__name__)
+
+
+def placeholder_path():
+    file_name = "placeholder.png"
+    if getattr(sys, "frozen", False):
+        return str(Path(sys._MEIPASS) / file_name)
+    else:
+        return str(Path(__file__).parent / file_name)
 
 
 class PITextureController:
@@ -32,7 +41,7 @@ class PITextureController:
             self._texture.draw()
 
     def reset(self):
-        ph_path = Path(__file__).parent / "placeholder.png"
-        ph_bgr = cv2.imread(str(ph_path))
+        ph_path = placeholder_path()
+        ph_bgr = cv2.imread(ph_path)
         self._texture.update_from_ndarray(ph_bgr)
         self.shape = ph_bgr.shape
