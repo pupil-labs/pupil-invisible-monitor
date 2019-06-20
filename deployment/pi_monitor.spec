@@ -2,6 +2,7 @@
 
 import pkg_resources
 import platform
+from pyglui import ui
 
 
 block_cipher = None
@@ -45,7 +46,6 @@ if platform.system() == "Darwin":
 elif platform.system() == "Linux":
     binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
 
-from pyglui import ui
 
 a = Entrypoint(
     "pi-monitor",
