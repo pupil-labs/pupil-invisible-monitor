@@ -113,6 +113,7 @@ class Host_Controller(Observable):
     sensor_types = ("video", "gaze")
 
     def __init__(self):
+        logger.info(f"Using NDSI protocol v{ndsi.__protocol_version__}")
         self._hosts = SortedHostDict()
         self.network = ndsi.Network(callbacks=(self.on_event,))
         self.network.start()
