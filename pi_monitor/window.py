@@ -81,6 +81,7 @@ class Window(Observable):
             return
 
         glfw.glfwInit()
+        glfw.glfwWindowHint(glfw.GLFW_RESIZABLE, False)
         self._window = glfw.glfwCreateWindow(*size, "PI Monitor")
         glfw.glfwSetWindowPos(self._window, *pos)
         glfw.glfwMakeContextCurrent(self._window)
