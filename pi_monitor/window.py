@@ -91,7 +91,9 @@ class Window(Observable):
         self.gui = ui.UI()
         self.gui_user_scale = gui_scale
 
-        self.quickbar = ui.Stretching_Menu("Quick Bar", (0, 100), (120, -100))
+        self.quickbar = ui.Horizontally_Stretching_Menu(
+            "Quick Bar", (100, 680), (-100, 120)
+        )
         self.gui.append(self.quickbar)
 
         # Register callbacks main_window
