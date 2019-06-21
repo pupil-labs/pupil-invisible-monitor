@@ -7,9 +7,10 @@ from version_utils import pupil_version
 
 def deb_package():
     app_version = pupil_version()
+    git_version = get_tag_commit()
     # lets build the structure for our deb package.
     dist_root = Path("dist").resolve()
-    deb_root = Path(f"pi_monitor_linux_os_x64_{app_version}").resolve()
+    deb_root = Path(f"pi_monitor_linux_os_x64_{git_version}").resolve()
     if deb_root.exists():
         shutil.rmtree(str(deb_root))
 
