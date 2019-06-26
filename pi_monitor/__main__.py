@@ -14,9 +14,7 @@ def main():
     log_path.parent.mkdir(exist_ok=True)
     handlers = [
         logging.StreamHandler(),
-        logging.handlers.RotatingFileHandler(
-            log_path, maxBytes=2 ** 15, backupCount=15
-        ),
+        logging.handlers.RotatingFileHandler(log_path, mode="w", backupCount=30),
     ]
     logging.basicConfig(
         level=logging.DEBUG,
@@ -65,6 +63,9 @@ def main():
         pass
     except Exception:
         logger.exception("Exception occured!")
+        for handler in logging.getLogger().handlers:
+            if isinstance(handler, logging.handlers.RotatingFileHandler):
+                handler.doRollover()
     finally:
         win.close()
         host_controller.cleanup()
