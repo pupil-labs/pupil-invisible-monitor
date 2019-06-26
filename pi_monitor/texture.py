@@ -32,6 +32,6 @@ class PITextureController:
             self._texture.draw()
 
     def reset(self):
-        placeholder = np.ones((1, 1, 3), dtype=np.uint8) * 158
+        placeholder = np.ones((1080, 1088, 3), dtype=np.uint8) * 158
         self._texture.update_from_ndarray(placeholder)
         self.shape = placeholder.shape

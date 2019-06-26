@@ -1,4 +1,6 @@
-import logging
+import logging.handlers
+from pathlib import Path
+
 from .filter import OffsetFilter
 from .models import Host_Controller
 from .overlay import GazeOverlay
@@ -8,9 +10,23 @@ from .window import Window
 
 
 def main():
-
-    logging.basicConfig(level=logging.DEBUG)
+    log_path = Path.home() / "pi_monitor_settings" / "pi_monitor.log"
+    log_path.parent.mkdir(exist_ok=True)
+    handlers = [
+        logging.StreamHandler(),
+        logging.handlers.RotatingFileHandler(
+            log_path, maxBytes=2 ** 15, backupCount=15
+        ),
+    ]
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=handlers,
+        style="{",
+        format="{asctime} [{levelname}] {message}",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
     logging.getLogger("pyre").setLevel(logging.WARNING)
+    logger = logging.getLogger(__name__)
 
     try:
         host_controller = Host_Controller()
@@ -47,11 +63,14 @@ def main():
         win.run_event_loop()
     except KeyboardInterrupt:
         pass
+    except Exception:
+        logger.exception("Exception occured!")
     finally:
         win.close()
         host_controller.cleanup()
         host_view_controller.cleanup()
         offset_filter_view_controller.cleanup()
+        logging.shutdown()
 
 
 if __name__ == "__main__":
