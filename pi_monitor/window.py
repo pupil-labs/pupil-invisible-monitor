@@ -1,3 +1,4 @@
+import logging
 import typing as T
 
 from pyglui import ui, cygl
@@ -6,6 +7,8 @@ from . import gl_utils
 from . import glfw
 from .event_loop import WindowEventLoop
 from .observable import Observable
+
+logger = logging.getLogger(__name__)
 
 
 def normalize(pos, size, flip_y=False):
@@ -54,6 +57,7 @@ class Window(Observable):
         gl_utils.glViewport(0, 0, *self.window_size)
         gl_utils.glFlush()
         gl_utils.make_coord_system_norm_based()
+        logger.debug("draw()")
         self.texture.draw()
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
 
