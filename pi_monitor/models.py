@@ -80,6 +80,9 @@ class Host:
             self._connect_sensor(network, sensor_type)
 
     def _connect_sensor(self, network, sensor_type):
+        # disconnect existing sensor and replace
+        self._disconnect_sensor(sensor_type)
+
         logger.debug(f"{self}._connect_sensor({sensor_type})")
         sensor_uuid = self.sensor_uuids[sensor_type]
 
