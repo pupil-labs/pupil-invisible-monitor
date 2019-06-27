@@ -36,14 +36,17 @@ class HostViewController:
         if host.is_linked and host.is_in_bad_state:
             iris_dark_blue = 0.157, 0.208, 0.576, 1.0
             thumb.on_color[:] = iris_dark_blue
-            thumb.status_text = "!"
         elif host.is_linked and host.is_available:
             iris_green = 0.024, 0.631, 0.145, 1.0
             thumb.on_color[:] = iris_green
-            thumb.status_text = " "
         elif host.is_linked and not host.is_available:
             retina_red = 0.957, 0.263, 0.212, 1.0
             thumb.on_color[:] = retina_red
+
+        # ensure ui update
+        if thumb.status_text == "":
+            thumb.status_text = " "
+        else:
             thumb.status_text = ""
 
     def cleanup(self):
