@@ -60,25 +60,11 @@ class Window(Observable):
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
 
     def update_gui(self):
-        logger.debug("A")
-        try:
-            clipboard = glfw.glfwGetClipboardString(self._window).decode()
-            logger.debug("A.A")
-        except AttributeError:  # clipbaord is None, might happen on startup
-            clipboard = ""
-            logger.debug("A.B")
-        logger.debug("B")
-        self.gui.update_clipboard(clipboard)
         logger.debug("C")
         user_input = self.gui.update()
         logger.debug("D")
         self.process_unconsumed_user_input(user_input)
         logger.debug("E")
-        if user_input.clipboard and user_input.clipboard != clipboard:
-            # only write to clipboard if content changed
-            logger.debug("F")
-            glfw.glfwSetClipboardString(self._window, user_input.clipboard.encode())
-        logger.debug("G")
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
