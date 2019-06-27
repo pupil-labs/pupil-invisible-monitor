@@ -460,6 +460,11 @@ glfwGetWindowUserPointer = _glfw.glfwGetWindowUserPointer
 glfwPollEvents = _glfw.glfwPollEvents
 glfwWaitEvents = _glfw.glfwWaitEvents
 
+
+def glfwWaitEventsTimeout(timeout):
+    _glfw.glfwWaitEventsTimeout(c_double(timeout))
+
+
 # --- Input -------------------------------------------------------------------
 glfwGetInputMode = _glfw.glfwGetInputMode
 glfwSetInputMode = _glfw.glfwSetInputMode

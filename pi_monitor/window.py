@@ -69,7 +69,9 @@ class Window(Observable):
             # only write to clipboard if content changed
             glfw.glfwSetClipboardString(self._window, user_input.clipboard.encode())
 
-    def draw(self):
+    def update(self, timeout=0.0):
+        glfw.glfwWaitEventsTimeout(timeout)
+        self.update_gui()
         glfw.glfwSwapBuffers(self._window)
 
     @property
