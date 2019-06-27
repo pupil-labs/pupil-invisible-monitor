@@ -74,8 +74,10 @@ class Window(Observable):
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
+        logger.debug("update_gui")
         self.update_gui()
         glfw.glfwSwapBuffers(self._window)
+        logger.debug("swapped")
 
     @property
     def should_draw(self):
