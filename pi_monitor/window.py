@@ -49,7 +49,7 @@ class Window(Observable):
         self.texture = texture
 
         callables.insert(0, self.draw_texture)
-        callables.extend([glfw.glfwPollEvents, self.update_gui])
+        callables.append(self.update)
         self._window = None
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
@@ -75,8 +75,10 @@ class Window(Observable):
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
+        logger.debug("update_gui")
         self.update_gui()
         glfw.glfwSwapBuffers(self._window)
+        logger.debug("swapped")
 
     @property
     def should_draw(self):
