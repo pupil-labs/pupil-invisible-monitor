@@ -49,7 +49,6 @@ class Window(Observable):
         self.texture = texture
 
         callables.insert(0, self.draw_texture)
-        callables.extend([glfw.glfwPollEvents, self.update_gui])
         self._window = None
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
