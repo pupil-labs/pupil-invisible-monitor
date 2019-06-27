@@ -76,6 +76,7 @@ class Window(Observable):
         glfw.glfwWaitEventsTimeout(timeout)
         logger.debug("update_gui")
         self.update_gui()
+        logger.debug("swapping")
         glfw.glfwSwapBuffers(self._window)
         logger.debug("swapped")
 
