@@ -17,7 +17,6 @@ class WindowEventLoop:
 
     def run(self):
         while self.window().should_draw:
-            logger.debug("event loop")
             self.update()
             time_to_wait = MIN_WAIT_TIME
             if self.last_sleep:
@@ -25,6 +24,7 @@ class WindowEventLoop:
                 time_to_wait = max(
                     time_to_wait, self.target_loop_duration - loop_duration
                 )
+            logger.debug(time_to_wait)
             self.window().update(time_to_wait)
             self.last_sleep = time.monotonic()
 
