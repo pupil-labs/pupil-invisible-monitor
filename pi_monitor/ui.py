@@ -62,7 +62,7 @@ class HostViewController:
             host,
             setter=link_host,
             label=host.name[:2],
-            hotkey=host.name[0],
+            hotkey=host.name[0].lower(),
             **THUMB_SETTINGS,
         )
         return host_thumb
