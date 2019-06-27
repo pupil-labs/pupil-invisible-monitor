@@ -60,11 +60,8 @@ class Window(Observable):
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
 
     def update_gui(self):
-        logger.debug("C")
         user_input = self.gui.update()
-        logger.debug("D")
         self.process_unconsumed_user_input(user_input)
-        logger.debug("E")
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
