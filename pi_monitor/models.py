@@ -179,7 +179,7 @@ class Host_Controller(Observable):
 
         for host in self.hosts():
             if not host.is_linked and not host.is_available:
-                self.remove_host(host.host_name)
+                self.remove_host(host.name)
 
     def remove_host(self, host_name):
         logger.debug(f"{type(self).__name__}.remove_host({host_name})")
