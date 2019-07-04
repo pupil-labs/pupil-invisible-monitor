@@ -1,4 +1,4 @@
-#pyglui >= 1.25
-#ndsi >= 0.5
+-e git://github.com/pupil-labs/pyglui/@master#egg=pyglui
+-e git://github.com/pupil-labs/pyndsi/@NDSIv4#egg=ndsi
 numpy
 PyOpenGL

@@ -111,3 +111,4 @@ deployment/icons/
 deployment/pi_monitor_linux_os_x64_1*
 
 .DS_Store
+src/
