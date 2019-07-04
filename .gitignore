@@ -106,9 +106,12 @@ venv.bak/
 # vscode
 .vscode/
 
-# vscode
+# deployments
 deployment/icons/
 deployment/pi_monitor_linux_os_x64_1*
 
+# macOS
 .DS_Store
+
+# pip src folder created when installing from git repos
 src/
