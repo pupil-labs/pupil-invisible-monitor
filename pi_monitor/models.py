@@ -118,7 +118,10 @@ class Host_Controller(Observable):
     def __init__(self):
         logger.info(f"Using NDSI protocol v{ndsi.__protocol_version__}")
         self._hosts = SortedHostDict()
-        self.network = ndsi.Network(callbacks=(self.on_event,))
+        self.network = ndsi.Network(
+            formats={ndsi.DataFormat.V4},
+            callbacks=(self.on_event,)
+        )
         self.network.start()
 
     def __getitem__(self, idx: int):
