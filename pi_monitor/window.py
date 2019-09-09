@@ -1,3 +1,4 @@
+import logging
 import typing as T
 
 from pyglui import ui, cygl
@@ -6,6 +7,8 @@ from . import gl_utils
 from . import glfw
 from .event_loop import WindowEventLoop
 from .observable import Observable
+
+logger = logging.getLogger(__name__)
 
 
 def normalize(pos, size, flip_y=False):
@@ -46,7 +49,6 @@ class Window(Observable):
         self.texture = texture
 
         callables.insert(0, self.draw_texture)
-        callables.extend([glfw.glfwPollEvents, self.update_gui])
         self._window = None
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
@@ -58,18 +60,12 @@ class Window(Observable):
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
 
     def update_gui(self):
-        try:
-            clipboard = glfw.glfwGetClipboardString(self._window).decode()
-        except AttributeError:  # clipbaord is None, might happen on startup
-            clipboard = ""
-        self.gui.update_clipboard(clipboard)
         user_input = self.gui.update()
         self.process_unconsumed_user_input(user_input)
-        if user_input.clipboard and user_input.clipboard != clipboard:
-            # only write to clipboard if content changed
-            glfw.glfwSetClipboardString(self._window, user_input.clipboard.encode())
 
-    def draw(self):
+    def update(self, timeout=0.0):
+        glfw.glfwWaitEventsTimeout(timeout)
+        self.update_gui()
         glfw.glfwSwapBuffers(self._window)
 
     @property

@@ -5,6 +5,8 @@ import weakref
 
 logger = logging.getLogger(__name__)
 
+MIN_WAIT_TIME = 0.0001
+
 
 class WindowEventLoop:
     def __init__(self, window, frame_rate: float, callables: T.List[T.Callable]):
@@ -16,12 +18,14 @@ class WindowEventLoop:
     def run(self):
         while self.window().should_draw:
             self.update()
+            time_to_wait = MIN_WAIT_TIME
             if self.last_sleep:
                 loop_duration = time.monotonic() - self.last_sleep
-                if loop_duration < self.target_loop_duration:
-                    time.sleep(self.target_loop_duration - loop_duration)
+                time_to_wait = max(
+                    time_to_wait, self.target_loop_duration - loop_duration
+                )
+            self.window().update(time_to_wait)
             self.last_sleep = time.monotonic()
-            self.window().draw()
 
     def update(self):
         for call in self.callables:

@@ -3,10 +3,10 @@ from setuptools import setup
 from deployment.version_utils import get_version
 
 requirements = [
-	"pyglui >= 1.25",
-	"ndsi >= 0.5",
-	"numpy",
-	"PyOpenGL",
+    "-e git://github.com/pupil-labs/pyglui/@master#egg=pyglui"
+    "-e git://github.com/pupil-labs/pyndsi/@master#egg=ndsi"
+    "numpy",
+    "PyOpenGL",
 ]
 
 setup(

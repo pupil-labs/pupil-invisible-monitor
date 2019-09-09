@@ -80,6 +80,9 @@ class Host:
             self._connect_sensor(network, sensor_type)
 
     def _connect_sensor(self, network, sensor_type):
+        # disconnect existing sensor and replace
+        self._disconnect_sensor(sensor_type)
+
         logger.debug(f"{self}._connect_sensor({sensor_type})")
         sensor_uuid = self.sensor_uuids[sensor_type]
 
@@ -115,7 +118,10 @@ class Host_Controller(Observable):
     def __init__(self):
         logger.info(f"Using NDSI protocol v{ndsi.__protocol_version__}")
         self._hosts = SortedHostDict()
-        self.network = ndsi.Network(callbacks=(self.on_event,))
+        self.network = ndsi.Network(
+            formats={ndsi.DataFormat.V4},
+            callbacks=(self.on_event,)
+        )
         self.network.start()
 
     def __getitem__(self, idx: int):
@@ -138,14 +144,14 @@ class Host_Controller(Observable):
 
     def on_event(self, caller, event):
         if event["subject"] == "attach" and event["sensor_type"] in self.sensor_types:
-            host_uuid = event["host_uuid"]
-            if host_uuid not in self._hosts:
-                host = Host(host_uuid, event["host_name"])
-                self._hosts[host_uuid] = host
+            host_name = event["host_name"]
+            if host_name not in self._hosts:
+                host = Host(event["host_uuid"], host_name)
+                self._hosts[host_name] = host
                 host_idx = self.index(host)
                 self.on_host_added(host_idx)
 
-            host = self._hosts[host_uuid]
+            host = self._hosts[host_name]
             host.add_sensor(
                 self.network,
                 event["sensor_type"],
@@ -155,13 +161,13 @@ class Host_Controller(Observable):
             host_idx = self.index(host)
             self.on_host_changed(host_idx)
 
-        if event["subject"] == "detach" and event["host_uuid"] in self._hosts:
-            host = self._hosts[event["host_uuid"]]
+        if event["subject"] == "detach" and event["host_name"] in self._hosts:
+            host = self._hosts[event["host_name"]]
             host_idx = self.index(host)
             host.remove_sensor(event["sensor_uuid"])
             self.on_host_changed(host_idx)
             if not host.is_linked and not host.is_available:
-                self.remove_host(event["host_uuid"])
+                self.remove_host(event["host_name"])
 
     def link(self, host_to_connect_sensor):
         logger.debug(f"{type(self).__name__}.link({host_to_connect_sensor})")
@@ -176,13 +182,13 @@ class Host_Controller(Observable):
 
         for host in self.hosts():
             if not host.is_linked and not host.is_available:
-                self.remove_host(host.host_uuid)
+                self.remove_host(host.name)
 
-    def remove_host(self, host_uuid):
-        logger.debug(f"{type(self).__name__}.remove_host({host_uuid})")
-        host = self._hosts[host_uuid]
+    def remove_host(self, host_name):
+        logger.debug(f"{type(self).__name__}.remove_host({host_name})")
+        host = self._hosts[host_name]
         host_idx = self.index(host)
-        del self._hosts[host_uuid]
+        del self._hosts[host_name]
         self.on_host_removed(host_idx)
 
     def fetch_recent_data(self):
