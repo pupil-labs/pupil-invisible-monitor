@@ -1,4 +1,0 @@
-pyglui >= 1.25
-ndsi >= 0.5
-numpy
-PyOpenGL

@@ -2,6 +2,13 @@ from setuptools import setup
 
 from deployment.version_utils import get_version
 
+requirements = [
+	"pyglui >= 1.25",
+	"ndsi >= 0.5",
+	"numpy",
+	"PyOpenGL",
+]
+
 setup(
     name="pi_monitor",
     version=str(get_version()),

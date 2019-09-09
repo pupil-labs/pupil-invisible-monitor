@@ -1,4 +1,4 @@
-# pi_monitor
+# Pupil Invisible Monitor
 Stand alone desktop app to monitor present Pupil Invisible Companions.
 
 ## Installation from source
