@@ -2,7 +2,7 @@ import shutil
 from pathlib import Path
 from subprocess import call
 
-from version_utils import pupil_version
+from version_utils import pupil_version, get_tag_commit
 
 
 def deb_package():
