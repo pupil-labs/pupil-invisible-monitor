@@ -50,6 +50,10 @@ exec /opt/{package_name}/{package_name} "$@"'''
     starter.chmod(0o755)
 
     # .desktop entry
+    # ATTENTION: In order for the bundle icon to display correctly
+    # two things are necessary:
+    # 1. Icon needs to be the icon's base name/stem
+    # 2. The window title must be equivalent to StartupWMClass
     with desktop.open("w") as f:
         content = f"""\
 [Desktop Entry]
@@ -59,7 +63,7 @@ Name={app_name}
 Comment=Preview Pupil Invisible data streams
 Exec=/opt/{package_name}/{package_name}
 Terminal=false
-Icon=PPL-Capture
+Icon={package_name}
 Categories=Application;
 Name[en_US]={app_name}
 Actions=Terminal;

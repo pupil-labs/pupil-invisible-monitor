@@ -78,7 +78,9 @@ class Window(Observable):
 
         glfw.glfwInit()
         glfw.glfwWindowHint(glfw.GLFW_RESIZABLE, False)
-        self._window = glfw.glfwCreateWindow(*size, "PI Monitor")
+        # Window name needs to be equal to `StartupWMClass` field in Linux .desktop file
+        # else the icon will not show correctly on Linux!
+        self._window = glfw.glfwCreateWindow(*size, "Pupil Invisible Monitor")
         glfw.glfwSetWindowPos(self._window, *pos)
         glfw.glfwMakeContextCurrent(self._window)
 
