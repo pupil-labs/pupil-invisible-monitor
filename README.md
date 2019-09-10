@@ -30,9 +30,29 @@ Run the _Installation from source_ instructions but replace the last step with
 python -m pip install -r requirements_deploy.txt
 ```
 
+### Icon files
+
+Install platform-specific icons to `deployment/icons`.
+
+Expected icon file names:
+- macOS: `pupil_invisible_monitor.icns`
+- Linux: `pupil_invisible_monitor.svg`
+- Windows: `pupil_invisible_monitor.ico`
+
+### macOS signing
+
+macOS requires your bundle to be signed if you you want to distribute it.
+The deployment procedure will attempt to sign the bundle using a private key named
+`Developer ID Application: Pupil Labs UG (haftungsbeschrankt) (R55K9ESN6B)`.
+
+If this key is not present in your keychain the deployment procedure will log a warning
+and not sign the bundle. This might result in problems when the bundle is started on
+a different Mac.
+
 ### Bundling
 ```sh
 cd deployment/
+git clean -dxf -e icons/  # remove previously built files
 pyinstaller -y pi_monitor.spec
 ```
 
