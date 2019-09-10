@@ -147,6 +147,6 @@ if current_platform == SupportedPlatform.linux:
 
 elif current_platform == SupportedPlatform.macos:
     _packaging.macos.sign_app(deployment_root)
-    packaged_bundle = _packaging.macos.zip_app(deployment_root)
+    packaged_bundle = _packaging.macos.dmg_app(deployment_root)
 
 move_packaged_bundle(deployment_root, packaged_bundle)

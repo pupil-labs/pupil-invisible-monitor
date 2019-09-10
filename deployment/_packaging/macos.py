@@ -1,9 +1,10 @@
 import logging
+import shutil
 import zipfile
 from pathlib import Path
 from subprocess import call
 
-from .utils import package_name, app_name, dist_dir, get_tag_commit
+from .utils import app_name, dist_dir, get_size, get_tag_commit, package_name
 
 logger = logging.getLogger()
 
@@ -42,5 +43,38 @@ def zip_app(deployment_root: Path) -> Path:
     return zip_path
 
 
+def dmg_app(deployment_root: Path) -> Path:
+    _remove_pre_bundle(deployment_root)
+
+    bundle_app_dir = _bundle_app_dir(deployment_root)
+    bundle_parent = bundle_app_dir.parent
+    bundle_dmg_name = f"{package_name}_mac_os_x64_{get_tag_commit()}"
+    bundle_dmg_mount_point = f"Install {app_name}"
+
+    applications_target = Path("/Applications")
+    applications_symlink = bundle_parent / "Applications"
+    if applications_symlink.exists():
+        applications_symlink.unlink()
+    applications_symlink.symlink_to(applications_target, target_is_directory=True)
+
+    volumen_size = get_size(bundle_parent)
+    dmg_cmd = (
+        f"hdiutil create "
+        f"-volname '{bundle_dmg_mount_point}' "
+        f"-srcfolder {bundle_parent} "
+        f"-format UDZO "
+        f"-size {volumen_size}b "
+        f"'{bundle_dmg_name}.dmg'"
+    )
+    call(dmg_cmd, shell=True)
+    return Path(bundle_dmg_name).with_suffix(".dmg")
+
+
 def _bundle_app_dir(deployment_root: Path):
     return dist_dir(deployment_root) / f"{app_name}.app"
+
+
+def _remove_pre_bundle(deployment_root: Path):
+    pre_bundle = dist_dir(deployment_root) / package_name
+    logger.info(f"Building dmg requires removing {pre_bundle}")
+    shutil.rmtree(str(pre_bundle))
