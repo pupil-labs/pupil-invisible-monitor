@@ -3,18 +3,27 @@ from setuptools import setup
 from deployment.version_utils import get_version
 
 requirements = [
-    "-e git://github.com/pupil-labs/pyglui/@master#egg=pyglui"
-    "-e git://github.com/pupil-labs/pyndsi/@master#egg=ndsi"
+    "pyglui>=1.25",
+    "ndsi>=1.0.dev0",
     "numpy",
     "PyOpenGL",
+    "pyzmq",
+    "pyre",
 ]
 
+package = "pupil_invisible_monitor"
+
 setup(
-    name="pi_monitor",
+    name="pupil-invisible-monitor",
     version=str(get_version()),
     license="MIT",
-    packages=["pi_monitor"],
+    packages=[package],
+    package_dir={"": "src"},
     zip_safe=False,
     include_package_data=True,
-    entry_points={"console_scripts": ["pi_monitor=pi_monitor.__main__:main"]},
+    entry_points={"console_scripts": [f"{package}={package}.__main__:main"]},
+    install_requires=requirements,
+    extras_require={
+        'deploy':  ["pyinstaller"],
+    }
 )

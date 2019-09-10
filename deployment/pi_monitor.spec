@@ -8,6 +8,7 @@ from pyglui import ui
 
 block_cipher = None
 
+package = "pupil_invisible_monitor"
 
 def Entrypoint(dist, group, name, **kwargs):
     """https://github.com/pyinstaller/pyinstaller/wiki/Recipe-Setuptools-Entry-Point"""
@@ -50,9 +51,9 @@ elif platform.system() == "Linux":
 
 
 a = Entrypoint(
-    "pi-monitor",
+    "pupil-invisible-monitor",
     "console_scripts",
-    "pi_monitor",
+    "pupil_invisible_monitor",
     pathex=[pathlib.Path.cwd()],
     binaries=binaries,
     datas=datas,
@@ -90,7 +91,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="pi_monitor",
+    name=package,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -98,14 +99,14 @@ exe = EXE(
     console=True,
 )
 coll = COLLECT(
-    exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name="pi_monitor"
+    exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package
 )
 
-app_version = pkg_resources.get_distribution("pi_monitor").version
+app_version = pkg_resources.get_distribution(package).version
 app = BUNDLE(
     coll,
-    name="PI Monitor.app",
-    icon="PPL-Capture",
+    name="Pupil Invisible Monitor.app",
+    icon="pupil-invisible-monitor",
     version=app_version,
     info_plist={"NSHighResolutionCapable": "True"},
 )
