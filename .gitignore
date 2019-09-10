@@ -106,11 +106,11 @@ venv.bak/
 # vscode
 .vscode/
 
-# deployments
-deployment/icons/
-deployment/pi_monitor_linux_os_x64_1*
-
 # macOS
 .DS_Store
 
 pip-*-metadata/
+
+deployment/icons/*
+!deployment/icons/.gitkeep
+deployment/bundles/
