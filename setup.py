@@ -1,15 +1,8 @@
 from setuptools import setup
 
-from deployment.version_utils import get_version
+from deployment._packaging.utils import get_version
 
-requirements = [
-    "pyglui>=1.25",
-    "ndsi>=1.0.dev0",
-    "numpy",
-    "PyOpenGL",
-    "pyzmq",
-    "pyre",
-]
+requirements = ["pyglui>=1.25", "ndsi>=1.0.dev0", "numpy", "PyOpenGL", "pyzmq", "pyre"]
 
 package = "pupil_invisible_monitor"
 
@@ -23,7 +16,5 @@ setup(
     include_package_data=True,
     entry_points={"console_scripts": [f"{package}={package}.__main__:main"]},
     install_requires=requirements,
-    extras_require={
-        'deploy':  ["pyinstaller"],
-    }
+    extras_require={"deploy": ["pyinstaller", "packaging"]},
 )
