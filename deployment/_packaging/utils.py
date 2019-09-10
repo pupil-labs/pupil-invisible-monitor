@@ -3,14 +3,28 @@
 # Changes, Additions: Moritz Kassner <moritz@pupil-labs.com>, Will Patera <will@pupil-labs.com>
 # This file is placed into the public domain.
 
-from subprocess import check_output, CalledProcessError, STDOUT
-import os, sys
-from distutils.version import LooseVersion as VersionFormat
-
-
 import logging
+import os
+import sys
+from pathlib import Path
+from subprocess import STDOUT, CalledProcessError, check_output
+
+from packaging.version import Version
 
 logger = logging.getLogger(__name__)
+app_name = "Pupil Invisible Monitor"
+package_name = "pupil_invisible_monitor"
+
+
+def dist_dir(root: Path):
+    return root.resolve() / "dist"
+
+
+def move_packaged_bundle(root: Path, bundle: Path):
+    bundle_destination_parent = root / "bundles"
+    bundle_destination_parent.mkdir(exist_ok=True)
+    bundle_destination = bundle_destination_parent / bundle.name
+    bundle.rename(bundle_destination)
 
 
 def get_tag_commit():
@@ -57,30 +71,9 @@ def get_version(version_file=None):
             version = f.read()
     else:
         version = pupil_version()
-    version = VersionFormat(version)
+    version = Version(version)
     logger.debug("Running version: {}".format(version))
     return version
-
-
-def read_rec_version(meta_info):
-    version = meta_info.get(
-        "Data Format Version", meta_info["Capture Software Version"]
-    )
-    version = "".join(
-        [c for c in version if c in "1234567890.-"]
-    )  # strip letters in case of legacy version format
-    version = VersionFormat(version)
-    logger.debug("Recording version: {}".format(version))
-    return version
-
-
-def write_version_file(target_dir):
-    version = pupil_version()
-    print("Current version of Pupil: ", version)
-
-    with open(os.path.join(target_dir, "_version_string_"), "w") as f:
-        f.write(version)
-    print("Wrote version into: {}".format(os.path.join(target_dir, "_version_string_")))
 
 
 if __name__ == "__main__":
