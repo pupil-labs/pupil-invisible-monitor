@@ -8,14 +8,14 @@ from .utils import pupil_version, get_tag_commit, app_name, package_name, dist_d
 def deb_package(deployment_root: Path) -> Path:
     app_version = pupil_version()
     git_version = get_tag_commit()
-    # lets build the structure for our deb package.
+    # lets build the structure for our deb package_name.
     dist_root = dist_dir(deployment_root)
-    deb_root = Path(f"{package}_linux_os_x64_{git_version}").resolve()
+    deb_root = Path(f"{package_name}_linux_os_x64_{git_version}").resolve()
     if deb_root.exists():
         shutil.rmtree(str(deb_root))
 
     control = deb_root / "DEBIAN" / "control"
-    desktop = deb_root / "usr" / "share" / "applications" / f"{package}.desktop"
+    desktop = deb_root / "usr" / "share" / "applications" / f"{package_name}.desktop"
     starter = deb_root / "usr" / "local" / "bin" / package_name
     opt_dir = deb_root / "opt"
     ico_dir = deb_root / "usr" / "share" / "icons" / "hicolor" / "scalable" / "apps"
@@ -29,7 +29,7 @@ def deb_package(deployment_root: Path) -> Path:
     with control.open("w") as f:
         dist_size = sum(f.stat().st_size for f in dist_root.rglob("*"))
         content = f"""\
-Package: {package.replace("_", "-")}
+Package: {package_name.replace("_", "-")}
 Version: {app_version}
 Architecture: amd64
 Maintainer: Pupil Labs <info@pupil-labs.com>
@@ -45,7 +45,7 @@ Installed-Size: {dist_size / 1024}
     with starter.open("w") as f:
         content = f'''\
 #!/bin/sh
-exec /opt/{package}/{package} "$@"'''
+exec /opt/{package_name}/{package_name} "$@"'''
         f.write(content)
     starter.chmod(0o755)
 
@@ -57,7 +57,7 @@ Version={app_version}
 Type=Application
 Name={app_name}
 Comment=Preview Pupil Invisible data streams
-Exec=/opt/{package}/{package}
+Exec=/opt/{package_name}/{package_name}
 Terminal=false
 Icon=PPL-Capture
 Categories=Application;
@@ -67,11 +67,11 @@ StartupWMClass={app_name}
 
 [Desktop Action Terminal]
 Name=Open in Terminal
-Exec=x-terminal-emulator -e {package}"""
+Exec=x-terminal-emulator -e {package_name}"""
         f.write(content)
     desktop.chmod(0o644)
 
-    svg_file_name = f"{package}.svg"
+    svg_file_name = f"{package_name}.svg"
     src_path = dist_root / package_name / svg_file_name
     dst_path = ico_dir / svg_file_name
     shutil.copy(str(src_path), str(dst_path))
