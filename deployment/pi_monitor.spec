@@ -1,14 +1,42 @@
 # -*- mode: python -*-
 
+import enum
+import logging
 import pathlib
 import platform
-
+import sys
 import pkg_resources
 from pyglui import ui
 
+
+logger = logging.getLogger()
 block_cipher = None
 
-package = "pupil_invisible_monitor"
+cwd = SPECPATH  # temporally add SPECPATH to Python path to import _packaging
+sys.path.insert(0, cwd)
+
+from _packaging.utils import app_name, package_name, move_packaged_bundle
+import _packaging.linux
+import _packaging.macos
+
+sys.path.remove(cwd)
+
+
+class SupportedPlatform(enum.Enum):
+    macos = "Darwin"
+    linux = "Linux"
+    windows = "Windows"
+
+
+icon_ext = {
+    SupportedPlatform.macos: ".icns",
+    SupportedPlatform.linux: ".svg",
+    SupportedPlatform.windows: ".ico",
+}
+
+current_platform = SupportedPlatform(platform.system())
+deployment_root = pathlib.Path()
+
 
 def Entrypoint(dist, group, name, **kwargs):
     """https://github.com/pyinstaller/pyinstaller/wiki/Recipe-Setuptools-Entry-Point"""
@@ -44,7 +72,7 @@ datas = [
 
 if platform.system() == "Darwin":
     binaries.append(("/usr/local/lib/libglfw.dylib", "."))
-    datas.append(("icons/*.icns", "."))
+    # datas.append(("icons/*.icns", "."))
 elif platform.system() == "Linux":
     binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
     datas.append(("icons/*.svg", "."))
@@ -53,7 +81,7 @@ elif platform.system() == "Linux":
 a = Entrypoint(
     "pupil-invisible-monitor",
     "console_scripts",
-    "pupil_invisible_monitor",
+    package_name,
     pathex=[pathlib.Path.cwd()],
     binaries=binaries,
     datas=datas,
@@ -68,7 +96,7 @@ a = Entrypoint(
 )
 
 blacklist = []
-if platform.system() == "Linux":
+if current_platform == SupportedPlatform.linux:
     blacklist += [
         # libc is also not meant to travel with the bundle.
         # Otherwise pyre.helpers with segfault.
@@ -91,7 +119,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name=package,
+    name=package_name,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -99,18 +127,26 @@ exe = EXE(
     console=True,
 )
 coll = COLLECT(
-    exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package
+    exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package_name
 )
 
-app_version = pkg_resources.get_distribution(package).version
+app_version = pkg_resources.get_distribution(package_name).version
+icon_name = package_name + icon_ext[current_platform]
+icon_path = deployment_root / "icons" / icon_name
 app = BUNDLE(
     coll,
-    name="Pupil Invisible Monitor.app",
-    icon="pupil-invisible-monitor",
+    name=f"{app_name}.app",
+    icon=icon_path,
     version=app_version,
     info_plist={"NSHighResolutionCapable": "True"},
 )
 
-if platform.system() == "Linux":
-    from linux_packaging import deb_package
-    deb_package()
+packaged_bundle: pathlib.Path = None
+if current_platform == SupportedPlatform.linux:
+    packaged_bundle = _packaging.linux.deb_package(deployment_root)
+
+elif current_platform == SupportedPlatform.macos:
+    _packaging.macos.sign_app(deployment_root)
+    packaged_bundle = _packaging.macos.zip_app(deployment_root)
+
+move_packaged_bundle(deployment_root, packaged_bundle)
