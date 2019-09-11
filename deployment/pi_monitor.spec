@@ -131,7 +131,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=True,
-    icon=icon_path,
+    icon=str(icon_path),
     resources=[f"{icon_name},ICON"],
 )
 coll = COLLECT(
