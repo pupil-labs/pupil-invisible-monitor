@@ -47,7 +47,7 @@ def Entrypoint(dist, group, name, **kwargs):
     kwargs["pathex"] = [ep.dist.location] + kwargs["pathex"]
     # script name must not be a valid module name to avoid name clashes on import
     script_path = os.path.join(workpath, name + "-script.py")
-    print("creating script for entry point", dist, group, name)
+    logger.info(f"Creating script for entry point {dist}:{group}.{name}")
     with open(script_path, "w") as fh:
         print("import", ep.module_name, file=fh)
         print("%s.%s()" % (ep.module_name, ".".join(ep.attrs)), file=fh)
@@ -113,7 +113,10 @@ if current_platform == SupportedPlatform.linux:
     ]
 
 binaries = list(b for b in a.binaries if b[0] not in blacklist)
-print(f"Removed {len(a.binaries) - len(binaries)} blacklisted binaries")
+logger.info(f"Removed {len(a.binaries) - len(binaries)} blacklisted binaries")
+
+icon_name = package_name + icon_ext[current_platform]
+icon_path = deployment_root / "icons" / icon_name
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
@@ -127,14 +130,13 @@ exe = EXE(
     strip=False,
     upx=True,
     console=True,
+    resources=[f"{icon_path},ICON"],
 )
 coll = COLLECT(
     exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package_name
 )
 
 app_version = pkg_resources.get_distribution(package_name).version
-icon_name = package_name + icon_ext[current_platform]
-icon_path = deployment_root / "icons" / icon_name
 app = BUNDLE(
     coll,
     name=f"{app_name}.app",
