@@ -132,7 +132,7 @@ exe = EXE(
     upx=True,
     console=True,
     icon=str(icon_path),
-    resources=[f"{icon_name},ICON"],
+    resources=[f"{icon_path},ICON"],
 )
 coll = COLLECT(
     exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package_name
