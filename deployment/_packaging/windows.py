@@ -16,4 +16,4 @@ def archive_7z(deployment_root: Path) -> Path:
 
     archive_7z_cmd = f"7z a -t7z {archive_path} {bundle_path}"
     call(archive_7z_cmd, shell=True)
-    return archive
+    return archive_path
