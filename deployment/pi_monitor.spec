@@ -132,7 +132,6 @@ exe = EXE(
     upx=True,
     console=True,
     icon=str(icon_path),
-    resources=[f"{icon_path.relative_to(deployment_root)},ICON"],
 )
 coll = COLLECT(
     exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package_name
