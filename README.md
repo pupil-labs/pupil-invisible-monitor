@@ -24,8 +24,8 @@ On Windows, additional steps are required:
 ## Run as Python module
 
 ```sh
-# Use the Python 3 installation of your choice
-python -m pupil_invisible_monitor
+# equivalent to running `python -m pupil_invisible_monitor`
+pupil_invisible_monitor
 ```
 
 ## Deployment
