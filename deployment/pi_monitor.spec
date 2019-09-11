@@ -78,7 +78,7 @@ elif current_platform == SupportedPlatform.linux:
     binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
     datas.append(("icons/*.svg", "."))
 elif current_platform == SupportedPlatform.windows:
-    binaries.append(("glfw3.dll", "../windows_dlls/glfw3.dll", "BINARY"))
+    binaries.append(("../windows_dlls/glfw3.dll", "."))
 
 a = Entrypoint(
     "pupil-invisible-monitor",
