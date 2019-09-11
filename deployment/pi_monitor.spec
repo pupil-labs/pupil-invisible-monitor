@@ -117,7 +117,7 @@ binaries = list(b for b in a.binaries if b[0] not in blacklist)
 logger.info(f"Removed {len(a.binaries) - len(binaries)} blacklisted binaries")
 
 icon_name = package_name + icon_ext[current_platform]
-icon_path = deployment_root / "icons" / icon_name
+icon_path = (deployment_root / "icons" / icon_name).resolve()
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
@@ -125,13 +125,14 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name=package_name,
+    name=f"{package_name}.exe",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     console=True,
     icon=str(icon_path),
+    resources=[f"{icon_path},ICON,{icon_name}"],
 )
 coll = COLLECT(
     exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package_name
