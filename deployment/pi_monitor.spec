@@ -18,6 +18,7 @@ sys.path.insert(0, cwd)
 from _packaging.utils import app_name, package_name, move_packaged_bundle
 import _packaging.linux
 import _packaging.macos
+import _packaging.window
 
 sys.path.remove(cwd)
 
