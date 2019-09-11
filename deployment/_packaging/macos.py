@@ -1,6 +1,5 @@
 import logging
 import shutil
-import zipfile
 from pathlib import Path
 from subprocess import call
 
@@ -29,18 +28,6 @@ def sign_app(deployment_root: Path):
         logger.info("Codesigning successful")
     else:
         logger.warning("Codesigning failed!")
-
-
-def zip_app(deployment_root: Path) -> Path:
-    bundle_app_dir = _bundle_app_dir(deployment_root)
-    zip_name = f"{package_name}_mac_os_x64_{get_tag_commit()}.zip"
-    zip_path = bundle_app_dir.with_name(zip_name)
-    with zipfile.ZipFile(zip_path, mode="w") as zip_archive:
-        for path in bundle_app_dir.rglob("*"):
-            arcname = path.relative_to(bundle_app_dir.parent)
-            zip_archive.write(path, arcname)
-
-    return zip_path
 
 
 def dmg_app(deployment_root: Path) -> Path:
