@@ -36,7 +36,7 @@ icon_ext = {
 }
 
 current_platform = SupportedPlatform(platform.system())
-deployment_root = pathlib.Path()
+deployment_root = pathlib.Path(cwd)
 
 
 def Entrypoint(dist, group, name, **kwargs):
@@ -132,7 +132,7 @@ exe = EXE(
     upx=True,
     console=True,
     icon=str(icon_path),
-    resources=[f"{icon_path},ICON"],
+    resources=[f"{icon_path.relative_to(deployment_root)},ICON"],
 )
 coll = COLLECT(
     exe, binaries, a.zipfiles, a.datas, strip=False, upx=True, name=package_name
