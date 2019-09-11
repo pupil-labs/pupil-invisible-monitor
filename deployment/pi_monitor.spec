@@ -60,8 +60,9 @@ pyglui_hidden_imports = [
     "pyglui.pyfontstash.fontstash",
     "pyglui.cygl.shader",
     "pyglui.cygl.utils",
-    "cysignals",
 ]
+if current_platform != SupportedPlatform.windows:
+    pyglui_hidden_imports.append("cysignals")
 
 binaries = []
 datas = [
@@ -70,13 +71,14 @@ datas = [
     (ui.get_pupil_icons_font_path(), "pyglui/"),
 ]
 
-if platform.system() == "Darwin":
+if current_platform == SupportedPlatform.macos:
     binaries.append(("/usr/local/lib/libglfw.dylib", "."))
     # datas.append(("icons/*.icns", "."))
-elif platform.system() == "Linux":
+elif current_platform == SupportedPlatform.linux:
     binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
     datas.append(("icons/*.svg", "."))
-
+elif current_platform == SupportedPlatform.windows:
+    binaries.append(("glfw3.dll", "../windows_dlls/glfw3.dll", "BINARY"))
 
 a = Entrypoint(
     "pupil-invisible-monitor",
@@ -148,5 +150,8 @@ if current_platform == SupportedPlatform.linux:
 elif current_platform == SupportedPlatform.macos:
     _packaging.macos.sign_app(deployment_root)
     packaged_bundle = _packaging.macos.dmg_app(deployment_root)
+
+elif current_platform == SupportedPlatform.windows:
+    packaged_bundle = _packaging.windows.archive_7z(deployment_root)
 
 move_packaged_bundle(deployment_root, packaged_bundle)

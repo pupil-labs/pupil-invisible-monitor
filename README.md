@@ -15,6 +15,12 @@ python -m pip install -U pip
 python -m pip install -r requirements.txt
 ```
 
+### Windows DLLs
+On Windows, additional steps are required:
+1. Follow the [Pupil download instructions for the GLFW dll](https://docs.pupil-labs.com/#glfw-to-pupil-external)
+1. Place the `glfw3.dll` file in the `windows_dlls` folder of this repository
+1. Add the `windows_dlls` folder path to your Windows environment variable `Path`
+
 ## Run as Python module
 
 ```sh
