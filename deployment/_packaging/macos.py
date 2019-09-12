@@ -54,7 +54,7 @@ def dmg_app(deployment_root: Path) -> Path:
         f"'{bundle_dmg_name}.dmg'"
     )
     call(dmg_cmd, shell=True)
-    return Path(f"{bundle_dmg_name}.dmg"))
+    return Path(f"{bundle_dmg_name}.dmg")
 
 
 def _bundle_app_dir(deployment_root: Path):
