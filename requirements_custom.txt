@@ -1,3 +1,3 @@
--e git://github.com/pupil-labs/pyglui/@pyproject#egg=pyglui
--e git://github.com/pupil-labs/pyndsi/@pyproject#egg=ndsi
+-e git://github.com/pupil-labs/pyglui/@master#egg=pyglui
+-e git://github.com/pupil-labs/pyndsi/@master#egg=ndsi
 -e git://github.com/zeromq/pyre@master#egg=pyre
