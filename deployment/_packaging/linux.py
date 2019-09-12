@@ -94,7 +94,7 @@ Exec=x-terminal-emulator -e {package_name}"""
     opt_dir.chmod(0o755)
 
     call(f"fakeroot dpkg-deb --build {deb_root}", shell=True)
-    return deb_root.with_suffix(".deb")
+    return Path(f"{deb_root}.deb")
 
 
 if __name__ == "__main__":
