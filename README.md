@@ -59,7 +59,7 @@ a different Mac.
 ```sh
 cd deployment/
 git clean -dxf -e icons/  # remove previously built files
-pyinstaller -y pi_monitor.spec
+pyinstaller --clean -y pi_monitor.spec
 ```
 
 The resulting distribution file will be copied to `deployment/bundles`.
