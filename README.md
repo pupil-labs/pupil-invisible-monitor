@@ -63,3 +63,11 @@ pyinstaller --clean -y pi_monitor.spec
 ```
 
 The resulting distribution file will be copied to `deployment/bundles`.
+
+## Troubleshooting
+**The computer running Pupil Invisible Monitor and the Pupil Invisible Companion device are connected to the same network, but the Companion device still does not show up in Pupil Invisible Monitor!**
+
+If you are connected to a large/public WiFi network, there is a chance that UDP transport is blocked. If this is the case, Pupil Invisible Monitor and Pupil Invisible Companion will not be able to communicate.
+
+You could try setting up a hotspot on the machine running Pupil Invisible Monitor instead. For optimal latency, you would ideally use a dedicated router. Note that internet is not a requirement for the usage of Pupil Invisible Monitor.
+
