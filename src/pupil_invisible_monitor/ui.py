@@ -3,7 +3,6 @@ import logging
 from pyglui import ui
 
 from . import glfw
-from .filter import OffsetFilter
 from .models import Host_Controller
 
 logger = logging.getLogger(__name__)
@@ -66,27 +65,3 @@ class HostViewController:
             **THUMB_SETTINGS,
         )
         return host_thumb
-
-
-class OffsetFilterViewController:
-    def __init__(self, gui_parent, controller: OffsetFilter):
-        self.controller = controller
-        gui_parent.append(
-            ui.Thumb(
-                "reset",
-                getter=lambda: False,
-                setter=self.reset,
-                label="R",
-                **THUMB_SETTINGS,
-            )
-        )
-
-    def cleanup(self):
-        self.controller = None
-
-    def reset(self, should_reset):
-        self.controller.offset = (0.0, 0.0)
-
-    def on_click(self, pos, button, action):
-        if action == glfw.GLFW_PRESS and button == glfw.GLFW_MOUSE_BUTTON_LEFT:
-            self.controller.update_offset(pos)
