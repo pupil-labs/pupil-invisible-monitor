@@ -68,7 +68,7 @@ if current_platform != SupportedPlatform.windows:
     pyglui_hidden_imports.append("cysignals")
 
 binaries = []
-binaries.append((glfw._glfw._name), ".")
+binaries.append((glfw._glfw._name, "."))
 
 datas = [
     (ui.get_opensans_font_path(), "pyglui/"),
