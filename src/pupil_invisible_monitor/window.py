@@ -78,12 +78,15 @@ class Window(Observable):
             return
 
         glfw.glfwInit()
-        glfw.glfwWindowHint(glfw.GLFW_RESIZABLE, False)
         # Window name needs to be equal to `StartupWMClass` field in Linux .desktop file
         # else the icon will not show correctly on Linux!
         self._window = glfw.glfwCreateWindow(
             *size, "Pupil Invisible Monitor", monitor=None, share=None
         )
+        glfw.glfwSetWindowSizeLimits(
+            self._window, 200, 200, glfw.GLFW_DONT_CARE, glfw.GLFW_DONT_CARE
+        )
+        glfw.glfwSetWindowAspectRatio(self._window, 1, 1)
         glfw.glfwSetWindowPos(self._window, *pos)
         glfw.glfwMakeContextCurrent(self._window)
 
@@ -92,10 +95,13 @@ class Window(Observable):
         self.gui = ui.UI()
         self.gui_user_scale = gui_scale
 
+        # Adding an intermediate container fixes a pylgui display bug
+        cont = ui.Container((0, 0), (0, 0), (0, 0))
         self.quickbar = ui.Horizontally_Stretching_Menu(
-            "Quick Bar", (100, 680), (-100, 120)
+            "Quick Bar", (0.0, -120.0), (0.0, 0.0)
         )
-        self.gui.append(self.quickbar)
+        cont.append(self.quickbar)
+        self.gui.append(cont)
 
         # Register callbacks main_window
         glfw.glfwSetFramebufferSizeCallback(self._window, self.on_resize)
