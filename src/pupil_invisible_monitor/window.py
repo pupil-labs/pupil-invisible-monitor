@@ -1,10 +1,11 @@
 import logging
 import typing as T
 
-from pyglui import ui, cygl
+import glfw.GLFW as glfw
+
+from pyglui import cygl, ui
 
 from . import gl_utils
-from . import glfw
 from .event_loop import WindowEventLoop
 from .observable import Observable
 
@@ -80,7 +81,9 @@ class Window(Observable):
         glfw.glfwWindowHint(glfw.GLFW_RESIZABLE, False)
         # Window name needs to be equal to `StartupWMClass` field in Linux .desktop file
         # else the icon will not show correctly on Linux!
-        self._window = glfw.glfwCreateWindow(*size, "Pupil Invisible Monitor")
+        self._window = glfw.glfwCreateWindow(
+            *size, "Pupil Invisible Monitor", monitor=None, share=None
+        )
         glfw.glfwSetWindowPos(self._window, *pos)
         glfw.glfwMakeContextCurrent(self._window)
 
@@ -127,7 +130,7 @@ class Window(Observable):
 
     def on_resize(self, window, w, h):
         self.window_size = w, h
-        self.hdpi_factor = glfw.getHDPIFactor(window)
+        self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
         self.gui.update_window(w, h)
         self.gui.collect_menus()

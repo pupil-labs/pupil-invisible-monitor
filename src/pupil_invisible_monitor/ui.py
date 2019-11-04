@@ -2,7 +2,7 @@ import logging
 
 from pyglui import ui
 
-from . import glfw
+import glfw.GLFW as glfw
 from .models import Host_Controller
 
 logger = logging.getLogger(__name__)
