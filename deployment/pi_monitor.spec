@@ -5,9 +5,15 @@ import logging
 import pathlib
 import platform
 import sys
-import pkg_resources
-from pyglui import ui
 
+import pkg_resources
+
+import _packaging.linux
+import _packaging.macos
+import _packaging.windows
+import glfw
+from _packaging.utils import app_name, move_packaged_bundle, package_name
+from pyglui import ui
 
 logger = logging.getLogger()
 block_cipher = None
@@ -15,10 +21,6 @@ block_cipher = None
 cwd = SPECPATH  # temporally add SPECPATH to Python path to import _packaging
 sys.path.insert(0, cwd)
 
-from _packaging.utils import app_name, package_name, move_packaged_bundle
-import _packaging.linux
-import _packaging.macos
-import _packaging.windows
 
 sys.path.remove(cwd)
 
@@ -66,20 +68,16 @@ if current_platform != SupportedPlatform.windows:
     pyglui_hidden_imports.append("cysignals")
 
 binaries = []
+binaries.append((glfw._glfw._name), ".")
+
 datas = [
     (ui.get_opensans_font_path(), "pyglui/"),
     (ui.get_roboto_font_path(), "pyglui/"),
     (ui.get_pupil_icons_font_path(), "pyglui/"),
 ]
 
-if current_platform == SupportedPlatform.macos:
-    binaries.append(("/usr/local/lib/libglfw.dylib", "."))
-    # datas.append(("icons/*.icns", "."))
-elif current_platform == SupportedPlatform.linux:
-    binaries.append(("/usr/lib/x86_64-linux-gnu/libglfw.so", "."))
+if current_platform == SupportedPlatform.linux:
     datas.append(("icons/*.svg", "."))
-elif current_platform == SupportedPlatform.windows:
-    binaries.append(("../windows_dlls/glfw3.dll", "."))
 
 a = Entrypoint(
     "pupil-invisible-monitor",
