@@ -11,12 +11,11 @@ See COPYING and COPYING.LESSER for license details.
 
 import math
 
+import glfw.GLFW as glfw
 import numpy as np
 import OpenGL
 from OpenGL.GL import *
 from OpenGL.GLU import gluPerspective
-
-from . import glfw
 
 # OpenGL.FULL_LOGGING = True
 OpenGL.ERROR_LOGGING = False
