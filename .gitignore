@@ -114,3 +114,4 @@ pip-*-metadata/
 deployment/icons/*
 !deployment/icons/.gitkeep
 deployment/bundles/
+test/control
