@@ -8,11 +8,7 @@ import sys
 
 import pkg_resources
 
-import _packaging.linux
-import _packaging.macos
-import _packaging.windows
 import glfw
-from _packaging.utils import app_name, move_packaged_bundle, package_name
 from pyglui import ui
 
 logger = logging.getLogger()
@@ -21,6 +17,10 @@ block_cipher = None
 cwd = SPECPATH  # temporally add SPECPATH to Python path to import _packaging
 sys.path.insert(0, cwd)
 
+import _packaging.linux
+import _packaging.macos
+import _packaging.windows
+from _packaging.utils import app_name, move_packaged_bundle, package_name
 
 sys.path.remove(cwd)
 
