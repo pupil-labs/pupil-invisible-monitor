@@ -125,7 +125,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name=f"{package_name}.exe",
+    name=package_name,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
