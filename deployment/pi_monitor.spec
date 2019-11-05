@@ -1,5 +1,6 @@
 # -*- mode: python -*-
 
+import ctypes.util
 import enum
 import logging
 import pathlib
@@ -68,7 +69,13 @@ if current_platform != SupportedPlatform.windows:
     pyglui_hidden_imports.append("cysignals")
 
 binaries = []
-binaries.append((glfw._glfw._name, "."))
+
+glfw_path = pathlib.Path(glfw._glfw._name)
+if glfw_path.exists():
+    glfw_path = str(glfw_path)
+else:
+    glfw_path = ctypes.util.find_library(glfw_path.name)
+binaries.append((glfw_path, "."))
 
 datas = [
     (ui.get_opensans_font_path(), "pyglui/"),
