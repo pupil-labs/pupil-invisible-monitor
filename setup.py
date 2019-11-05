@@ -9,7 +9,7 @@ requirements = [
     "PyOpenGL",
     "pyzmq",
     "pyre",
-    "glfw",
+    "glfw>=1.8.4",
 ]
 
 package = "pupil_invisible_monitor"
