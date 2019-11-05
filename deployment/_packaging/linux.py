@@ -35,8 +35,10 @@ Architecture: amd64
 Maintainer: Pupil Labs <info@pupil-labs.com>
 Priority: optional
 Description: {app_name} is the easy way to preview scene video and gaze streams of your Pupil Invisible devices.
-Installed-Size: {dist_size / 1024}
+Installed-Size: {round(dist_size / 1024)}
 """
+        # See this link regarding the calculation of the Installed-Size field
+        # https://www.debian.org/doc/debian-policy/ch-controlfields.html#installed-size
         f.write(content)
     control.chmod(0o644)
 
