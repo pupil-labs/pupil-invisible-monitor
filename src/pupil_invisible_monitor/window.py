@@ -140,6 +140,7 @@ class Window(Observable):
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
         self.gui.update_window(w, h)
         self.gui.collect_menus()
+        gl_utils.adjust_gl_view(w, h)
 
     def on_window_key(self, window, key, scancode, action, mods):
         self.gui.update_key(key, scancode, action, mods)
