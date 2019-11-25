@@ -54,11 +54,18 @@ class Window(Observable):
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
     def draw_texture(self):
+        if self.is_minimized():
+            return
         gl_utils.glViewport(0, 0, *self.window_size)
         gl_utils.glFlush()
         gl_utils.make_coord_system_norm_based()
         self.texture.draw()
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
+
+    def is_minimized(self):
+        return self.window_size is not None and any(
+            dimension == 0 for dimension in self.window_size
+        )
 
     def update_gui(self):
         user_input = self.gui.update()
@@ -136,6 +143,8 @@ class Window(Observable):
 
     def on_resize(self, window, w, h):
         self.window_size = w, h
+        if self.is_minimized():
+            return
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
         self.gui.update_window(w, h)
@@ -163,6 +172,8 @@ class Window(Observable):
         self.on_resize(self._window, *self.window_size)
 
     def process_unconsumed_user_input(self, user_input):
+        if self.is_minimized():
+            return
         x, y = glfw.glfwGetCursorPos(self._window)
         pos = x * self.hdpi_factor, y * self.hdpi_factor
         pos = normalize(pos, self.window_size)
