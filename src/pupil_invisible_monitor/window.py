@@ -167,10 +167,6 @@ class Window(Observable):
     def on_scroll(self, window, x, y):
         self.gui.update_scroll(x, y * self.scroll_factor)
 
-    def set_scale(self, new_scale):
-        self.gui_user_scale = new_scale
-        self.on_resize(self._window, *self.window_size)
-
     def process_unconsumed_user_input(self, user_input):
         if self.is_minimized():
             return
