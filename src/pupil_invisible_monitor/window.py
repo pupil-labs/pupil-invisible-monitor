@@ -63,9 +63,7 @@ class Window(Observable):
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
 
     def is_minimized(self):
-        return self.window_size is not None and any(
-            dimension == 0 for dimension in self.window_size
-        )
+        return (self.window_size is not None) and (0 in self.window_size)
 
     def update_gui(self):
         user_input = self.gui.update()
