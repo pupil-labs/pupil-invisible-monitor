@@ -1,4 +1,16 @@
 # Pupil Invisible Monitor
+<a
+href="https://pupil-labs.com/products/invisible"
+rel="noopener"
+target="_blank">
+	<p align="center">
+		<img 
+		src="https://raw.githubusercontent.com/wiki/pupil-labs/pupil-invisible-monitor/media/pupil_labs_pupil_invisible_monitor_repo_banner.jpg" 
+		alt="Pupil Labs - Pupil Invisible Monitor: desktop app to monitor real-time scene video and gaze data."/>
+	</p>
+</a>
+
+
 Stand-alone desktop app used to view real-time video and gaze data from all Pupil Invisible Companion Devices on the same Wifi network.
 
 ## Users
