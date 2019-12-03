@@ -1,7 +1,37 @@
 # Pupil Invisible Monitor
-Stand alone desktop app to monitor present Pupil Invisible Companions.
+<a
+href="https://pupil-labs.com"
+rel="noopener"
+target="_blank">
+	<p align="center">
+		<img 
+		src="https://raw.githubusercontent.com/wiki/pupil-labs/pupil/media/images/pupil_labs_pupil_core_repo_banner.jpg" 
+		alt="Pupil Labs - Pupil Core software: open source eye tracking platform."/>
+	</p>
+</a>
 
-## Installation from source
+Stand-alone desktop app used to view real-time video and gaze data from all Pupil Invisible Companion Devices on the same Wifi network.
+
+## Users
+Download the latest Pupil Invisible Monitor app!
+
+<a
+href="https://github.com/pupil-labs/pupil-invisible-monitor/releases/latest"
+rel="noopener"
+target="_blank">
+	<p align="center">
+		<img 
+		src="https://raw.githubusercontent.com/wiki/pupil-labs/pupil-invisible-monitor/media/pupil_labs_pupil_invisible_app_banner.jpg" 
+		alt="Pupil Labs - Pupil Invisible Monitor: desktop app to monitor real-time scene video and gaze data."/>
+	</p>
+</a>
+
+
+## Developers
+
+The below sections are only required for software developers. If you just want to use the app, download the latest release, from the link above. 
+
+### Install from source
 
 ```sh
 git clone git@github.com:pupil-labs/pupil-invisible-monitor.git
@@ -15,59 +45,16 @@ python -m pip install -U pip
 python -m pip install -r requirements.txt
 ```
 
-### Windows DLLs
+#### Windows DLLs
 On Windows, additional steps are required:
 1. Follow the [Pupil download instructions for the GLFW dll](https://docs.pupil-labs.com/#glfw-to-pupil-external)
 1. Place the `glfw3.dll` file in the `windows_dlls` folder of this repository
 1. Add the `windows_dlls` folder path to your Windows environment variable `Path`
 
-## Run as Python module
+### Run as Python module
 
 ```sh
 # equivalent to running `python -m pupil_invisible_monitor`
 pupil_invisible_monitor
 ```
-
-## Deployment
-
-### Deployment dependencies
-Run the _Installation from source_ instructions but replace the last step with
-```sh
-python -m pip install -r requirements_deploy.txt
-```
-
-### Icon files
-
-Install platform-specific icons to `deployment/icons`.
-
-Expected icon file names:
-- macOS: `pupil_invisible_monitor.icns`
-- Linux: `pupil_invisible_monitor.svg`
-- Windows: `pupil_invisible_monitor.ico`
-
-### macOS signing
-
-macOS requires your bundle to be signed if you you want to distribute it.
-The deployment procedure will attempt to sign the bundle using a private key named
-`Developer ID Application: Pupil Labs UG (haftungsbeschrankt) (R55K9ESN6B)`.
-
-If this key is not present in your keychain the deployment procedure will log a warning
-and not sign the bundle. This might result in problems when the bundle is started on
-a different Mac.
-
-### Bundling
-```sh
-cd deployment/
-git clean -dxf -e icons/  # remove previously built files
-pyinstaller --clean -y pi_monitor.spec
-```
-
-The resulting distribution file will be copied to `deployment/bundles`.
-
-## Troubleshooting
-**The computer running Pupil Invisible Monitor and the Pupil Invisible Companion device are connected to the same network, but the Companion device still does not show up in Pupil Invisible Monitor!**
-
-If you are connected to a large/public WiFi network, there is a chance that UDP transport is blocked. If this is the case, Pupil Invisible Monitor and Pupil Invisible Companion will not be able to communicate.
-
-You could try setting up a hotspot on the machine running Pupil Invisible Monitor instead. For optimal latency, you would ideally use a dedicated router. Note that internet is not a requirement for the usage of Pupil Invisible Monitor.
 
