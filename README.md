@@ -2,7 +2,7 @@
 Stand-alone desktop app used to view real-time video and gaze data from all Pupil Invisible Companion Devices on the same Wifi network.
 
 ## Users
-Download the latest Pupil Invisible Monitor app!
+[Download the latest Pupil Invisible Monitor app](https://github.com/pupil-labs/pupil-invisible-monitor/releases/latest "Pupil Invisible Monitor: desktop app to monitor real-time scene video and gaze data")
 
 <a
 href="https://github.com/pupil-labs/pupil-invisible-monitor/releases/latest"
