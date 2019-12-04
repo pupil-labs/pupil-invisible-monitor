@@ -3,10 +3,10 @@ import os
 import sys
 from pathlib import Path
 
-if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
     meipass = Path(sys._MEIPASS)
     lib_path = next(meipass.glob("*glfw*"), None)
-    os.environ['PYGLFW_LIBRARY'] = str(lib_path)
+    os.environ["PYGLFW_LIBRARY"] = str(lib_path)
 
 from .models import Host_Controller
 from .overlay import GazeOverlay
@@ -29,7 +29,6 @@ def main():
         format="{asctime} [{levelname}] {message}",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
-    logging.getLogger("pyre").setLevel(logging.WARNING)
     logger = logging.getLogger(__name__)
 
     try:
