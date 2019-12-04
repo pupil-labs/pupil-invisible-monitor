@@ -56,17 +56,13 @@ class Window(Observable):
     def draw_texture(self):
         if self.is_minimized():
             return
-
-        short_dim = np.argmin(self.window_size)
-
-        viewport_length = self.window_size[short_dim]
+        viewport_length = min(self.window_size)
         viewport_x_offset = (self.window_size[0] - viewport_length) // 2
         viewport_y_offset = (self.window_size[1] - viewport_length) // 2
 
         gl_utils.glViewport(
             viewport_x_offset, viewport_y_offset, viewport_length, viewport_length
         )
-        gl_utils.glFlush()
         gl_utils.make_coord_system_norm_based()
         self.texture.draw()
         gl_utils.make_coord_system_pixel_based(self.texture.shape)
@@ -81,6 +77,7 @@ class Window(Observable):
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
         self.update_gui()
+        gl_utils.glFlush()
         glfw.glfwSwapBuffers(self._window)
 
     @property
@@ -155,11 +152,13 @@ class Window(Observable):
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
         # gl_utils.adjust_gl_view(w, h)
+        self.draw_texture()
         short_side_len = min(w, h)
         self.gui.update_window(short_side_len, short_side_len)
         self.gui.collect_menus()
-        self.draw_texture()
         self.update_gui()
+        gl_utils.glFlush()
+        glfw.glfwSwapBuffers(self._window)
 
     def on_window_key(self, window, key, scancode, action, mods):
         self.gui.update_key(key, scancode, action, mods)
