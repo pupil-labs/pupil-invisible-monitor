@@ -173,10 +173,12 @@ class Host_Controller(Observable):
         for host_idx, host in enumerate(self.hosts()):
             if host is host_to_connect_sensor and not host.is_linked:
                 host.link(self.network)
+                logger.info(f"Linked connected host {host}")
                 self.on_host_changed(host_idx)
                 self.on_host_linked()
             elif host is not host_to_connect_sensor and host.is_linked:
                 host.unlink()
+                logger.info(f"Unlinked previously connected host {host}")
                 self.on_host_changed(host_idx)
 
         for host in self.hosts():
@@ -203,6 +205,10 @@ class Host_Controller(Observable):
                     if gaze:
                         self.on_recent_gaze(gaze)
                 except ndsi.sensor.NotDataSubSupportedError:
+                    logger.warning(
+                        f"Host {host} is in bad state. "
+                        "Please force-restart Pupil Invisible Companion."
+                    )
                     self.is_in_bad_state = True
                     self.on_host_changed(idx)
 
