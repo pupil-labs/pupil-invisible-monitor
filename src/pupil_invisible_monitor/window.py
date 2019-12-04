@@ -100,7 +100,7 @@ class Window(Observable):
         glfw.glfwSetWindowSizeLimits(
             self._window, 200, 200, glfw.GLFW_DONT_CARE, glfw.GLFW_DONT_CARE
         )
-        glfw.glfwSetWindowAspectRatio(self._window, 1, 1)
+        # glfw.glfwSetWindowAspectRatio(self._window, 1, 1)
         glfw.glfwSetWindowPos(self._window, *pos)
         glfw.glfwMakeContextCurrent(self._window)
 
