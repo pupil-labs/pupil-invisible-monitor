@@ -29,7 +29,6 @@ def main():
         format="{asctime} [{levelname}] {message}",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
-    logging.getLogger("pyre").setLevel(logging.WARNING)
     logger = logging.getLogger(__name__)
 
     try:
