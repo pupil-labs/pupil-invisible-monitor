@@ -79,7 +79,14 @@ def adjust_gl_view(w, h):
     """
     h = max(h, 1)
     w = max(w, 1)
-    glViewport(0, 0, w, h)
+    dimensions = w, h
+    short_dim = np.argmin(dimensions)
+
+    viewport_length = dimensions[short_dim]
+    viewport_x_offset = (dimensions[0] - viewport_length) // 2
+    viewport_y_offset = (dimensions[1] - viewport_length) // 2
+
+    glViewport(viewport_x_offset, viewport_y_offset, viewport_length, viewport_length)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glOrtho(0, w, h, 0, -1, 1)

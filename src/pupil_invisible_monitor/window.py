@@ -2,7 +2,7 @@ import logging
 import typing as T
 
 import glfw.GLFW as glfw
-
+import numpy as np
 from pyglui import cygl, ui
 
 from . import gl_utils
@@ -56,7 +56,16 @@ class Window(Observable):
     def draw_texture(self):
         if self.is_minimized():
             return
-        gl_utils.glViewport(0, 0, *self.window_size)
+
+        short_dim = np.argmin(self.window_size)
+
+        viewport_length = self.window_size[short_dim]
+        viewport_x_offset = (self.window_size[0] - viewport_length) // 2
+        viewport_y_offset = (self.window_size[1] - viewport_length) // 2
+
+        gl_utils.glViewport(
+            viewport_x_offset, viewport_y_offset, viewport_length, viewport_length
+        )
         gl_utils.glFlush()
         gl_utils.make_coord_system_norm_based()
         self.texture.draw()
@@ -145,9 +154,12 @@ class Window(Observable):
             return
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
-        self.gui.update_window(w, h)
+        # gl_utils.adjust_gl_view(w, h)
+        short_side_len = min(w, h)
+        self.gui.update_window(short_side_len, short_side_len)
         self.gui.collect_menus()
-        gl_utils.adjust_gl_view(w, h)
+        self.draw_texture()
+        self.update_gui()
 
     def on_window_key(self, window, key, scancode, action, mods):
         self.gui.update_key(key, scancode, action, mods)
