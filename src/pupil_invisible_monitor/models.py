@@ -119,8 +119,7 @@ class Host_Controller(Observable):
         logger.info(f"Using NDSI protocol v{ndsi.__protocol_version__}")
         self._hosts = SortedHostDict()
         self.network = ndsi.Network(
-            formats={ndsi.DataFormat.V4},
-            callbacks=(self.on_event,)
+            formats={ndsi.DataFormat.V4}, callbacks=(self.on_event,)
         )
         self.network.start()
 
