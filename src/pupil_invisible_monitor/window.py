@@ -154,10 +154,16 @@ class Window(Observable):
             return
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
-        # gl_utils.adjust_gl_view(w, h)
+
         self.draw_texture()
+
         short_side_len = min(w, h)
         self.gui.update_window(short_side_len, short_side_len)
+        # TODO: this is not yet fully correct.
+        # When scaling the window past the max height, the button is at the wrong
+        # location while scaling. After scaling is done, it works though.
+        gl_utils.adjust_gl_view(short_side_len, short_side_len)
+
         self.gui.collect_menus()
         self.update_gui()
         gl_utils.glFlush()
