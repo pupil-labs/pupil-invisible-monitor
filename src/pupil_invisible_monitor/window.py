@@ -147,6 +147,9 @@ class Window(Observable):
 
     def on_resize(self, window, w, h):
         self.window_size = w, h
+
+        gl_utils.glClear(gl_utils.GL_COLOR_BUFFER_BIT)
+        gl_utils.glClearColor(0, 0, 0, 1)
         if self.is_minimized():
             return
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
