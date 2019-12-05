@@ -9,6 +9,8 @@ from . import gl_utils
 from .event_loop import WindowEventLoop
 from .observable import Observable
 
+from contextlib import contextmanager
+
 logger = logging.getLogger(__name__)
 
 
@@ -53,26 +55,29 @@ class Window(Observable):
         self._window = None
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
+    @contextmanager
+    def use_content_area(self):
+        # glViewport to a square centered at the window with maximal size such that it
+        # is still fully contained by the windows
+        min_size = min(self.window_size)
+        x = (self.window_size[0] - min_size) // 2
+        y = (self.window_size[1] - min_size) // 2
+        with gl_utils.use_viewport(x, y, min_size, min_size):
+            yield
+
     def draw_texture(self):
         if self.is_minimized():
             return
-        viewport_length = min(self.window_size)
-        viewport_x_offset = (self.window_size[0] - viewport_length) // 2
-        viewport_y_offset = (self.window_size[1] - viewport_length) // 2
-
-        gl_utils.glViewport(
-            viewport_x_offset, viewport_y_offset, viewport_length, viewport_length
-        )
-        gl_utils.make_coord_system_norm_based()
-        self.texture.draw()
-        gl_utils.make_coord_system_pixel_based(self.texture.shape)
+        with gl_utils.use_norm_based_coordinate_system():
+            self.texture.draw()
 
     def is_minimized(self):
         return (self.window_size is not None) and (0 in self.window_size)
 
     def update_gui(self):
-        user_input = self.gui.update()
-        self.process_unconsumed_user_input(user_input)
+        with gl_utils.use_viewport(0, 0, *self.window_size):
+            user_input = self.gui.update()
+            self.process_unconsumed_user_input(user_input)
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
@@ -147,25 +152,24 @@ class Window(Observable):
 
     def on_resize(self, window, w, h):
         self.window_size = w, h
-
-        gl_utils.glClear(gl_utils.GL_COLOR_BUFFER_BIT)
-        gl_utils.glClearColor(0, 0, 0, 1)
         if self.is_minimized():
             return
+
+        # Always clear buffers on resize to make sure that the black stripes left/right
+        # are black and not polluted from previous frames. Make sure this is applied on
+        # the whole window and not within glViewport!
+        gl_utils.glClear(gl_utils.GL_COLOR_BUFFER_BIT)
+        gl_utils.glClearColor(0, 0, 0, 1)
+
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
 
-        self.draw_texture()
+        with self.use_content_area():
+            self.draw_texture()
+            self.gui.update_window(w, h)
+            self.gui.collect_menus()
+            self.update_gui()
 
-        short_side_len = min(w, h)
-        self.gui.update_window(short_side_len, short_side_len)
-        # TODO: this is not yet fully correct.
-        # When scaling the window past the max height, the button is at the wrong
-        # location while scaling. After scaling is done, it works though.
-        gl_utils.adjust_gl_view(short_side_len, short_side_len)
-
-        self.gui.collect_menus()
-        self.update_gui()
         gl_utils.glFlush()
         glfw.glfwSwapBuffers(self._window)
 

@@ -10,6 +10,7 @@ See COPYING and COPYING.LESSER for license details.
 """
 
 import math
+from contextlib import contextmanager, 
 
 import glfw.GLFW as glfw
 import numpy as np
@@ -79,14 +80,8 @@ def adjust_gl_view(w, h):
     """
     h = max(h, 1)
     w = max(w, 1)
-    dimensions = w, h
-    short_dim = np.argmin(dimensions)
 
-    viewport_length = dimensions[short_dim]
-    viewport_x_offset = (dimensions[0] - viewport_length) // 2
-    viewport_y_offset = (dimensions[1] - viewport_length) // 2
-
-    glViewport(viewport_x_offset, viewport_y_offset, viewport_length, viewport_length)
+    glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glOrtho(0, w, h, 0, -1, 1)
@@ -134,25 +129,40 @@ def make_coord_system_norm_based(flip=False):
     glLoadIdentity()
 
 
-class Coord_System(object):
-    """docstring for Coord_System"""
+@contextmanager
+def use_viewport(x, y, width, height):
+    width = max(0, width)
+    height = max(0, height)
 
-    def __init__(self, left, right, bottom, top):
-        super(Coord_System, self).__init__()
-        self.bounds = left, right, bottom, top
+    glPushAttrib(GL_VIEWPORT_BIT)
+    glViewport(x, y, width, height)
 
-    def __enter__(self):
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glLoadIdentity()
-        glOrtho(*self.bounds, -1, 1)  # gl coord convention
+    yield
 
-        glMatrixMode(GL_MODELVIEW)
-        glPushMatrix()
-        glLoadIdentity()
+    glPopAttrib()
 
-    def __exit__(self, *exc):
-        glMatrixMode(GL_PROJECTION)
-        glPopMatrix()
-        glMatrixMode(GL_MODELVIEW)
-        glPopMatrix()
+
+@contextmanager
+def use_coordinate_system(left, right, bottom, top):
+    glMatrixMode(GL_PROJECTION)
+    glPushMatrix()
+    glLoadIdentity()
+    glOrtho(left, right, bottom, top, -1, 1)  # gl coord convention
+
+    glMatrixMode(GL_MODELVIEW)
+    glPushMatrix()
+    glLoadIdentity()
+
+    yield
+
+    glMatrixMode(GL_PROJECTION)
+    glPopMatrix()
+
+    glMatrixMode(GL_MODELVIEW)
+    glPopMatrix()
+
+
+def use_norm_based_coordinate_system() -> ContextManager:
+    # more descriptive shortcut for common coordinates
+    return use_coordinate_system(0, 1, 0, 1)
+
