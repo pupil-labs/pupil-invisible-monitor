@@ -16,7 +16,7 @@ Stand-alone desktop app used to view real-time video and gaze data from all Pupi
 ## Getting Started
 
 <a
-href="https://github.com/pupil-labs/pupil-invisible-monitor/releases/latest"
+href="https://github.com/pupil-labs/pupil-invisible-monitor/releases/latest#user-content-downloads"
 rel="noopener"
 target="_blank">
 	<p align="center">
