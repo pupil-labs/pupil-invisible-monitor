@@ -57,6 +57,8 @@ cd pupil-invisible-monitor/
 python -m pip install -U pip
 python -m pip install -r requirements.txt
 ```
+#### Linux Dependencies
+Pupil Invisible Monitor depends on GLFW-3.3 or above. Note that currently Ubuntu only offers packages for version 3.2, so you might need to install GLFW-3.3 [from source](https://github.com/glfw/glfw/releases/tag/3.3).
 
 #### Windows DLLs
 On Windows, additional steps are required:
