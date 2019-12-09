@@ -1,5 +1,6 @@
 import logging
 import typing as T
+from contextlib import contextmanager
 
 import glfw.GLFW as glfw
 import numpy as np
@@ -8,8 +9,6 @@ from pyglui import cygl, ui
 from . import gl_utils
 from .event_loop import WindowEventLoop
 from .observable import Observable
-
-from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)
 
