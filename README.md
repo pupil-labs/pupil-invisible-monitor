@@ -27,7 +27,7 @@ target="_blank">
 </a>
 
 
-To run the Pupil Invisible Monitor app smoothly, please note the following: 
+To use Pupil Invisible Monitor app, please note the following: 
 - The Pupil Invisible Monitor app and the Pupil Invisible Companion devices need to be **connected to the same wifi**. 
 - **Public wifis** often block the required communication protocols, so typically they can not be used. 
 - Some **anti-virus programs** may block the required communication protocols by default. 
@@ -63,4 +63,3 @@ On Windows, additional steps are required:
 # equivalent to running `python -m pupil_invisible_monitor`
 pupil_invisible_monitor
 ```
-
