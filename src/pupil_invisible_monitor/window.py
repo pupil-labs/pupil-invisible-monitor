@@ -62,8 +62,9 @@ class Window(Observable):
         min_size = min(self.window_size)
         x = (self.window_size[0] - min_size) // 2
         y = (self.window_size[1] - min_size) // 2
-        with gl_utils.use_viewport(x, y, min_size, min_size):
-            yield
+        rect = (x, y, min_size, min_size)
+        with gl_utils.use_viewport(*rect):
+            yield rect
 
     def draw_texture(self):
         if self.is_minimized():
@@ -124,12 +125,12 @@ class Window(Observable):
         self.gui_user_scale = gui_scale
 
         # Adding an intermediate container fixes a pylgui display bug
-        cont = ui.Container((0, 0), (0, 0), (0, 0))
+        self.cont = ui.Container((0, 0), (0, 0), (0, 0))
         self.quickbar = ui.Horizontally_Stretching_Menu(
             "Quick Bar", (0.0, -120.0), (0.0, 0.0)
         )
-        cont.append(self.quickbar)
-        self.gui.append(cont)
+        self.cont.append(self.quickbar)
+        self.gui.append(self.cont)
 
         # Register callbacks main_window
         glfw.glfwSetFramebufferSizeCallback(self._window, self.on_resize)
@@ -176,9 +177,12 @@ class Window(Observable):
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
 
-        with self.use_content_area():
-            self.draw_texture()
+        with self.use_content_area() as (x, y, content_w, content_h):
+            # update GUI window to full window
             self.gui.update_window(w, h)
+            # update content container to content square
+            self.cont.outline = ui.FitBox(ui.Vec2(x, y), ui.Vec2(content_w, content_h))
+            self.draw_texture()
             self.gui.collect_menus()
             self.update_gui()
 
