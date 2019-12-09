@@ -28,5 +28,7 @@ class WindowEventLoop:
             self.last_sleep = time.monotonic()
 
     def update(self):
-        for call in self.callables:
-            call()
+        # all callables should draw themselves within the window content area
+        with self.window().use_content_area():
+            for call in self.callables:
+                call()

@@ -1,8 +1,9 @@
 import logging
 import typing as T
+from contextlib import contextmanager
 
 import glfw.GLFW as glfw
-
+import numpy as np
 from pyglui import cygl, ui
 
 from . import gl_utils
@@ -53,25 +54,36 @@ class Window(Observable):
         self._window = None
         self.event_loop = WindowEventLoop(self, frame_rate, callables)
 
+    @contextmanager
+    def use_content_area(self):
+        # glViewport to a square centered at the window with maximal size such that it
+        # is still fully contained by the windows
+        min_size = min(self.window_size)
+        x = (self.window_size[0] - min_size) // 2
+        y = (self.window_size[1] - min_size) // 2
+        rect = (x, y, min_size, min_size)
+        with gl_utils.use_viewport(*rect):
+            yield rect
+
     def draw_texture(self):
         if self.is_minimized():
             return
-        gl_utils.glViewport(0, 0, *self.window_size)
-        gl_utils.glFlush()
-        gl_utils.make_coord_system_norm_based()
-        self.texture.draw()
-        gl_utils.make_coord_system_pixel_based(self.texture.shape)
+
+        with gl_utils.use_norm_based_coordinate_system():
+            self.texture.draw()
 
     def is_minimized(self):
         return (self.window_size is not None) and (0 in self.window_size)
 
     def update_gui(self):
-        user_input = self.gui.update()
-        self.process_unconsumed_user_input(user_input)
+        with gl_utils.use_viewport(0, 0, *self.window_size):
+            user_input = self.gui.update()
+            self.process_unconsumed_user_input(user_input)
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
         self.update_gui()
+        gl_utils.glFlush()
         glfw.glfwSwapBuffers(self._window)
 
     @property
@@ -91,7 +103,6 @@ class Window(Observable):
         glfw.glfwSetWindowSizeLimits(
             self._window, 200, 200, glfw.GLFW_DONT_CARE, glfw.GLFW_DONT_CARE
         )
-        glfw.glfwSetWindowAspectRatio(self._window, 1, 1)
         glfw.glfwSetWindowPos(self._window, *pos)
         glfw.glfwMakeContextCurrent(self._window)
 
@@ -101,12 +112,12 @@ class Window(Observable):
         self.gui_user_scale = gui_scale
 
         # Adding an intermediate container fixes a pylgui display bug
-        cont = ui.Container((0, 0), (0, 0), (0, 0))
+        self.cont = ui.Container((0, 0), (0, 0), (0, 0))
         self.quickbar = ui.Horizontally_Stretching_Menu(
             "Quick Bar", (0.0, -120.0), (0.0, 0.0)
         )
-        cont.append(self.quickbar)
-        self.gui.append(cont)
+        self.cont.append(self.quickbar)
+        self.gui.append(self.cont)
 
         # Register callbacks main_window
         glfw.glfwSetFramebufferSizeCallback(self._window, self.on_resize)
@@ -143,11 +154,27 @@ class Window(Observable):
         self.window_size = w, h
         if self.is_minimized():
             return
+
+        # Always clear buffers on resize to make sure that the black stripes left/right
+        # are black and not polluted from previous frames. Make sure this is applied on
+        # the whole window and not within glViewport!
+        gl_utils.glClear(gl_utils.GL_COLOR_BUFFER_BIT)
+        gl_utils.glClearColor(0, 0, 0, 1)
+
         self.hdpi_factor = glfw.glfwGetWindowContentScale(window)[0]
         self.gui.scale = self.gui_user_scale * self.hdpi_factor
-        self.gui.update_window(w, h)
-        self.gui.collect_menus()
-        gl_utils.adjust_gl_view(w, h)
+
+        with self.use_content_area() as (x, y, content_w, content_h):
+            # update GUI window to full window
+            self.gui.update_window(w, h)
+            # update content container to content square
+            self.cont.outline = ui.FitBox(ui.Vec2(x, y), ui.Vec2(content_w, content_h))
+            self.draw_texture()
+            self.gui.collect_menus()
+            self.update_gui()
+
+        gl_utils.glFlush()
+        glfw.glfwSwapBuffers(self._window)
 
     def on_window_key(self, window, key, scancode, action, mods):
         self.gui.update_key(key, scancode, action, mods)
