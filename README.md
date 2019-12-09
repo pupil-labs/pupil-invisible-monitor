@@ -33,6 +33,13 @@ To use Pupil Invisible Monitor app, please note the following:
 - Some **anti-virus programs** may block the required communication protocols by default. 
 - We recommend using a **dedicated wifi router** for low latency and ease of use.
 
+### Using Pupil Invisible Companion
+
+When Pupil Invisible Monitor is able to detect the Pupil Invisible Companion app, you will see a button appear at the bottom of the monitor window. Press the button to connect to your Pupil Invisible Companion Device. You can also press the key of the button's first letter on your keyboard.
+
+The two letters of the button are the first two letters of the name of your Pupil Invisible Companion Device. This way you can easily differentiate between multiple Companion Devices in the same network.
+
+
 ## Developers
 
 The below steps are only required for software developers looking to work with the source-code of the Pupil Invisible Monitor app. If you just want to use the app, download the latest release, from the link above. 
