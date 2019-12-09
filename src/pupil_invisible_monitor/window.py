@@ -68,6 +68,15 @@ class Window(Observable):
     def draw_texture(self):
         if self.is_minimized():
             return
+
+        # TODO: This is only because we cannot limit pyglui to draw the UI into the
+        # content area. This means that in some configurations, the UI (buttons) will be
+        # drawn on the black bars outside the content area and since the UI is drawn
+        # with alpha, we need to clear these bars again. This can be removed once we
+        # manage to limit pyglui to draw into the content area.
+        gl_utils.glClear(gl_utils.GL_COLOR_BUFFER_BIT)
+        gl_utils.glClearColor(0, 0, 0, 1)
+
         with gl_utils.use_norm_based_coordinate_system():
             self.texture.draw()
 
@@ -75,6 +84,9 @@ class Window(Observable):
         return (self.window_size is not None) and (0 in self.window_size)
 
     def update_gui(self):
+        # TODO: This should actually use the content area, but pyglui cannot deal with a
+        # smaller window. You would need to call gui.update_window() but this will
+        # always be aligned to (0, 0).
         with gl_utils.use_viewport(0, 0, *self.window_size):
             user_input = self.gui.update()
             self.process_unconsumed_user_input(user_input)
