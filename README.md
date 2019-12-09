@@ -28,7 +28,7 @@ target="_blank">
 
 
 To use Pupil Invisible Monitor app, please note the following: 
-- The Pupil Invisible Monitor app and the Pupil Invisible Companion devices need to be **connected to the same wifi**. 
+- Pupil Invisible Monitor app and Pupil Invisible Companion devices need to be connected to the **same WiFi** network. 
 - **Public wifis** often block the required communication protocols, so typically they can not be used. 
 - Some **anti-virus programs** may block the required communication protocols by default. 
 - For best quality we recommend using a **dedicated wifi router**.
