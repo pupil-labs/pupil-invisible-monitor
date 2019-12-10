@@ -82,9 +82,20 @@ class Window(Observable):
 
     def update(self, timeout=0.0):
         glfw.glfwWaitEventsTimeout(timeout)
+
         self.update_gui()
         gl_utils.glFlush()
         glfw.glfwSwapBuffers(self._window)
+
+        if self.hdpi_changed():
+            # calling resize will handle hdpi changes and resize the UI accordingly
+            self.manual_resize()
+
+    def hdpi_changed(self):
+        return self.hdpi_factor != glfw.glfwGetWindowContentScale(self._window)[0]
+
+    def manual_resize(self):
+        self.on_resize(self._window, *glfw.glfwGetFramebufferSize(self._window))
 
     @property
     def should_draw(self):
@@ -129,7 +140,8 @@ class Window(Observable):
         self.gui.configuration = ui_config or {}
         gl_utils.basic_gl_setup()
 
-        self.on_resize(self._window, *glfw.glfwGetFramebufferSize(self._window))
+        # Perform an initial window size setup
+        self.manual_resize()
 
     def close(self):
         if not self._window:
@@ -151,6 +163,8 @@ class Window(Observable):
         # Callback functions
 
     def on_resize(self, window, w, h):
+        """Updates windows/UI sizes and redraws the UI with correct HDPI scaling."""
+
         self.window_size = w, h
         if self.is_minimized():
             return
@@ -167,8 +181,15 @@ class Window(Observable):
         with self.use_content_area() as (x, y, content_w, content_h):
             # update GUI window to full window
             self.gui.update_window(w, h)
+
             # update content container to content square
-            self.cont.outline = ui.FitBox(ui.Vec2(x, y), ui.Vec2(content_w, content_h))
+            # NOTE: since this is part of the UI, it will be affected by the gui
+            # scaling, but we actually need real coordinates, so we need to convert it
+            # back.
+            self.cont.outline = ui.FitBox(
+                ui.Vec2(x // self.hdpi_factor, y // self.hdpi_factor),
+                ui.Vec2(content_w // self.hdpi_factor, content_h // self.hdpi_factor),
+            )
             self.draw_texture()
             self.gui.collect_menus()
             self.update_gui()
@@ -186,7 +207,6 @@ class Window(Observable):
         self.gui.update_button(button, action, mods)
 
     def on_pos(self, window, x, y):
-        x, y = x * self.hdpi_factor, y * self.hdpi_factor
         self.gui.update_mouse(x, y)
 
     def on_scroll(self, window, x, y):
