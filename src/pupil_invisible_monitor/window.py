@@ -69,6 +69,9 @@ class Window(Observable):
         if self.is_minimized():
             return
 
+        gl_utils.glClear(gl_utils.GL_COLOR_BUFFER_BIT)
+        gl_utils.glClearColor(0, 0, 0, 1)
+
         with gl_utils.use_norm_based_coordinate_system():
             self.texture.draw()
 
