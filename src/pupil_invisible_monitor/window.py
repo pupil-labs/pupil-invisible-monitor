@@ -1,4 +1,5 @@
 import logging
+import platform
 import typing as T
 from contextlib import contextmanager
 
@@ -211,6 +212,10 @@ class Window(Observable):
         self.gui.update_button(button, action, mods)
 
     def on_pos(self, window, x, y):
+        if platform.system() == "Darwin":
+            # x, y are in screen coordinates. pyglui expects pixel coordinates.
+            # on macOS screen coordinates * hdpi_factor == pixel coordinates
+            x, y = x * self.hdpi_factor, y * self.hdpi_factor
         self.gui.update_mouse(x, y)
 
     def on_scroll(self, window, x, y):
@@ -220,7 +225,10 @@ class Window(Observable):
         if self.is_minimized():
             return
         x, y = glfw.glfwGetCursorPos(self._window)
-        pos = x * self.hdpi_factor, y * self.hdpi_factor
+        if platform.system() == "Darwin":
+            # x, y are in screen coordinates. pyglui expects pixel coordinates.
+            # on macOS screen coordinates * hdpi_factor == pixel coordinates
+            pos = x * self.hdpi_factor, y * self.hdpi_factor
         pos = normalize(pos, self.window_size)
         # Position in img pixels
         pos = denormalize(pos, self.texture.shape[:2])
