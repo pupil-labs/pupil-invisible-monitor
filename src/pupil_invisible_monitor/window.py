@@ -59,9 +59,9 @@ class Window(Observable):
     def use_content_area(self):
         # glViewport to a square centered at the window with maximal size such that it
         # is still fully contained by the windows
-        min_size = min(self.window_size)
-        x = (self.window_size[0] - min_size) // 2
-        y = (self.window_size[1] - min_size) // 2
+        min_size = min(self.framebuffer_size)
+        x = (self.framebuffer_size[0] - min_size) // 2
+        y = (self.framebuffer_size[1] - min_size) // 2
         rect = (x, y, min_size, min_size)
         with gl_utils.use_viewport(*rect):
             yield rect
@@ -77,10 +77,10 @@ class Window(Observable):
             self.texture.draw()
 
     def is_minimized(self):
-        return (self.window_size is not None) and (0 in self.window_size)
+        return (self.framebuffer_size is not None) and (0 in self.framebuffer_size)
 
     def update_gui(self):
-        with gl_utils.use_viewport(0, 0, *self.window_size):
+        with gl_utils.use_viewport(0, 0, *self.framebuffer_size):
             user_input = self.gui.update()
             self.process_unconsumed_user_input(user_input)
 
@@ -99,7 +99,9 @@ class Window(Observable):
         return self.hdpi_factor != glfw.glfwGetWindowContentScale(self._window)[0]
 
     def manual_resize(self):
-        self.on_resize(self._window, *glfw.glfwGetFramebufferSize(self._window))
+        self.on_framebuffer_resize(
+            self._window, *glfw.glfwGetFramebufferSize(self._window)
+        )
 
     @property
     def should_draw(self):
@@ -136,7 +138,7 @@ class Window(Observable):
         self.gui.append(self.cont)
 
         # Register callbacks main_window
-        glfw.glfwSetFramebufferSizeCallback(self._window, self.on_resize)
+        glfw.glfwSetFramebufferSizeCallback(self._window, self.on_framebuffer_resize)
         glfw.glfwSetKeyCallback(self._window, self.on_window_key)
         glfw.glfwSetCharCallback(self._window, self.on_window_char)
         glfw.glfwSetMouseButtonCallback(self._window, self.on_window_mouse_button)
@@ -167,12 +169,19 @@ class Window(Observable):
 
         # Callback functions
 
-    def on_resize(self, window, w, h):
+    def on_framebuffer_resize(self, window, w, h):
         """Updates windows/UI sizes and redraws the UI with correct HDPI scaling."""
-
-        self.window_size = w, h
+        self.framebuffer_size = w, h
         if self.is_minimized():
             return
+
+        # NOTE: macOS and some Linux versions with the wayland display server have an
+        # upscaled framebuffer when using a high-DPI monitor. This means that screen
+        # coordinates != pixel coordinates. We need to know if this is the case in order
+        # to transform UI input into the right coordinates, so we check for this case
+        # here.
+        window_size = glfw.glfwGetWindowSize(window)
+        self.has_scaled_framebuffer = window_size != self.framebuffer_size
 
         # Always clear buffers on resize to make sure that the black stripes left/right
         # are black and not polluted from previous frames. Make sure this is applied on
@@ -212,11 +221,8 @@ class Window(Observable):
         self.gui.update_button(button, action, mods)
 
     def on_pos(self, window, x, y):
-        if platform.system() == "Darwin":
-            # x, y are in screen coordinates. pyglui expects pixel coordinates.
-            # on macOS screen coordinates * hdpi_factor == pixel coordinates
-            x, y = x * self.hdpi_factor, y * self.hdpi_factor
-        self.gui.update_mouse(x, y)
+        # x, y are in screen coordinates. pyglui expects pixel coordinates.
+        self.gui.update_mouse(*self.screen_to_pixel(x, y))
 
     def on_scroll(self, window, x, y):
         self.gui.update_scroll(x, y * self.scroll_factor)
@@ -225,15 +231,21 @@ class Window(Observable):
         if self.is_minimized():
             return
         x, y = glfw.glfwGetCursorPos(self._window)
-        if platform.system() == "Darwin":
-            # x, y are in screen coordinates. pyglui expects pixel coordinates.
-            # on macOS screen coordinates * hdpi_factor == pixel coordinates
-            pos = x * self.hdpi_factor, y * self.hdpi_factor
-        pos = normalize(pos, self.window_size)
+        # x, y are in screen coordinates. pyglui expects pixel coordinates.
+        pos = self.screen_to_pixel(x, y)
+        pos = normalize(pos, self.framebuffer_size)
         # Position in img pixels
         pos = denormalize(pos, self.texture.shape[:2])
         for button, action, mods in user_input.buttons:
             self.on_click(pos, button, action)
+
+    def screen_to_pixel(self, x, y):
+        if self.has_scaled_framebuffer:
+            # Some systems have scaled framebuffers, here:
+            # pixel coordinates = screen coordinates * hdpi_factor
+            return x * self.hdpi_factor, y * self.hdpi_factor
+        else:
+            return x, y
 
     def on_click(self, pos, button, action):
         pass
