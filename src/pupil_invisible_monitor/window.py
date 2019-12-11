@@ -109,6 +109,7 @@ class Window(Observable):
             return
 
         glfw.glfwInit()
+        glfw.glfwWindowHint(glfw.GLFW_SCALE_TO_MONITOR, glfw.GLFW_TRUE)
         # Window name needs to be equal to `StartupWMClass` field in Linux .desktop file
         # else the icon will not show correctly on Linux!
         self._window = glfw.glfwCreateWindow(
