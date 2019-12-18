@@ -60,6 +60,9 @@ python -m pip install -r requirements.txt
 #### Linux Dependencies
 Pupil Invisible Monitor depends on GLFW-3.3 or above. Note that currently Ubuntu only offers packages for version 3.2, so you might need to install GLFW-3.3 [from source](https://github.com/glfw/glfw/releases/tag/3.3). Make sure to compile as a shared library! You might use the following snippet:
 ```bash
+# install dependencies
+sudo apt install xorg-dev
+
 # download and unzip
 wget https://github.com/glfw/glfw/releases/download/3.3/glfw-3.3.zip
 unzip glfw-3.3.zip
