@@ -44,20 +44,9 @@ The two letters of the button are the first two letters of the name of your Pupi
 
 The below steps are only required for software developers looking to work with the source-code of the Pupil Invisible Monitor app. If you just want to use the app, download the latest release, from the link above. 
 
-### Install from source
+### Setup Dependencies
 
-```sh
-git clone git@github.com:pupil-labs/pupil-invisible-monitor.git
-# Clone via HTTPS if you did not configure SSH correctly
-# git clone https://github.com/pupil-labs/pupil-invisible-monitor.git
-
-cd pupil-invisible-monitor/
-
-# Use the Python 3 installation of your choice
-python -m pip install -U pip
-python -m pip install -r requirements.txt
-```
-#### Linux Dependencies
+#### Linux
 Pupil Invisible Monitor depends on GLFW-3.3 or above. Note that currently Ubuntu only offers packages for version 3.2, so you might need to install GLFW-3.3 [from source](https://github.com/glfw/glfw/releases/tag/3.3). Make sure to compile as a shared library! You might use the following snippet:
 ```bash
 # install dependencies
@@ -79,11 +68,27 @@ rm glfw-3.3.zip
 rm -r glfw-3.3
 ```
 
-#### Windows DLLs
-On Windows, additional steps are required:
-1. Follow the [Pupil download instructions for the GLFW dll](https://docs.pupil-labs.com/#glfw-to-pupil-external)
-1. Place the `glfw3.dll` file in the `windows_dlls` folder of this repository
-1. Add the `windows_dlls` folder path to your Windows environment variable `Path`
+#### Windows
+On Windows you will need to setup glfw correctly:
+1. Download the 64-bit Windows binaries from https://www.glfw.org/download.html
+1. Extract the downloaded zip file.
+1. Copy the file `glfw3.dll` from the extracted `lib-vc2015` folder to the `windows_dlls` folder of this repository.
+1. Add the `windows_dlls` folder to your Windows environment variable `Path`
+
+### Install from source
+After setting up the required dependencies, you can download the source code for Pupil Invisible Monitor and proceed with the installation:
+
+```sh
+git clone git@github.com:pupil-labs/pupil-invisible-monitor.git
+# Clone via HTTPS if you did not configure SSH correctly
+# git clone https://github.com/pupil-labs/pupil-invisible-monitor.git
+
+cd pupil-invisible-monitor/
+
+# Use the Python 3 installation of your choice
+python -m pip install -U pip
+python -m pip install -r requirements.txt
+```
 
 ### Run as Python module
 
