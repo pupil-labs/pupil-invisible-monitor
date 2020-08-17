@@ -1,9 +1,9 @@
 # Deployment
 
 ## Deployment dependencies
-Run the _Installation from source_ instructions but replace the last step with
+Run the _Install from source_ instructions, but install with the **deploy** option:
 ```sh
-python -m pip install -r requirements_deploy.txt
+python -m pip install ".[deploy]"
 ```
 
 ### Icon files

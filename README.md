@@ -46,6 +46,8 @@ The below steps are only required for software developers looking to work with t
 
 ### Install from source
 
+We recommend to setup a clean Python virtual environment for installing Pupil Invisible Monitor from source.
+
 ```sh
 git clone git@github.com:pupil-labs/pupil-invisible-monitor.git
 # Clone via HTTPS if you did not configure SSH correctly
@@ -55,37 +57,15 @@ cd pupil-invisible-monitor/
 
 # Use the Python 3 installation of your choice
 python -m pip install -U pip
-python -m pip install -r requirements.txt
+python -m pip install .
+
+# Or if you want to use an editable installation:
+python -m pip install -e .
 ```
-#### Linux Dependencies
-Pupil Invisible Monitor depends on GLFW-3.3 or above. Note that currently Ubuntu only offers packages for version 3.2, so you might need to install GLFW-3.3 [from source](https://github.com/glfw/glfw/releases/tag/3.3). Make sure to compile as a shared library! You might use the following snippet:
-```bash
-# install dependencies
-sudo apt install xorg-dev
-
-# download and unzip
-wget https://github.com/glfw/glfw/releases/download/3.3/glfw-3.3.zip
-unzip glfw-3.3.zip
-cd glfw-3.3
-
-# build and install as shared library
-cmake . -DBUILD_SHARED_LIBS=ON
-make -j4
-sudo make install
-
-# cleanup downloaded files
-cd ..
-rm glfw-3.3.zip
-rm -r glfw-3.3
-```
-
-#### Windows DLLs
-On Windows, additional steps are required:
-1. Follow the [Pupil download instructions for the GLFW dll](https://docs.pupil-labs.com/#glfw-to-pupil-external)
-1. Place the `glfw3.dll` file in the `windows_dlls` folder of this repository
-1. Add the `windows_dlls` folder path to your Windows environment variable `Path`
 
 ### Run as Python module
+
+After installating, Pupil Invisible Monitor is registered as a Python console script and can be executed from the command line via:
 
 ```sh
 # equivalent to running `python -m pupil_invisible_monitor`
