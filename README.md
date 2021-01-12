@@ -21,7 +21,7 @@ rel="noopener"
 target="_blank">
 	<p align="center">
 		<img 
-		src="https://raw.githubusercontent.com/wiki/pupil-labs/pupil-invisible-monitor/media/pupil_labs_pupil_invisible_app_banner.jpg" 
+		src="https://raw.githubusercontent.com/wiki/pupil-labs/pupil-invisible-monitor/media/pupil_labs_pupil_invisible_app_banner.png" 
 		alt="Pupil Labs - Pupil Invisible Monitor: desktop app to monitor real-time scene video and gaze data."/>
 	</p>
 </a>
