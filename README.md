@@ -71,3 +71,7 @@ After installating, Pupil Invisible Monitor is registered as a Python console sc
 # equivalent to running `python -m pupil_invisible_monitor`
 pupil_invisible_monitor
 ```
+
+### Troubleshooting
+
+- [ImportError: DLL load failed on Windows](https://github.com/pupil-labs/pupil-invisible-monitor/issues/24)
