@@ -11,15 +11,14 @@ requirements = [
     "glfw>=1.8.4",
     "PyOpenGL",
     "pyzmq",
-    "pyre @ https://github.com/zeromq/pyre/archive/master.zip",
     # Install pyglui from source for Unix and from wheel for Windows. Note we install
     # via git, not from archive, as pyglui contains submodules which are not included in
     # archive, but will be checked out when installing via git.
     f'pyglui @ git+https://github.com/pupil-labs/pyglui.git@v{PYLGUI_VERSION} ; platform_system != "Windows"',
     f'pyglui @ https://github.com/pupil-labs/pyglui/releases/download/v{PYLGUI_VERSION}/pyglui-{PYLGUI_VERSION}-cp36-cp36m-win_amd64.whl ; platform_system == "Windows"',
-    # Install pyndsi from source for Unix and from wheel for Windows.
-    f'ndsi @ https://github.com/pupil-labs/pyndsi/archive/v{PYNDSI_VERSION}.zip ; platform_system != "Windows"',
-    f'ndsi @ https://github.com/pupil-labs/pyndsi/releases/download/v{PYNDSI_VERSION}/ndsi-{PYNDSI_VERSION}-cp36-cp36m-win_amd64.whl ; platform_system == "Windows"',
+    
+    # Install pyndsi from source until it is available via PyPI
+    f'ndsi @ https://github.com/pupil-labs/pyndsi/archive/master.zip',
 ]
 
 package = "pupil_invisible_monitor"
