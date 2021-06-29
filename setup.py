@@ -3,7 +3,7 @@ from setuptools import setup
 from deployment._packaging.utils import get_version
 
 # Libs with Windows wheels need a fixed version to install the wheels automatically.
-PYLGUI_VERSION = "1.28"
+PYLGUI_VERSION = "1.29"
 
 requirements = [
     "numpy",
