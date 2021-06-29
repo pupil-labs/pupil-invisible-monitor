@@ -3,7 +3,7 @@ from setuptools import setup
 from deployment._packaging.utils import get_version
 
 # Libs with Windows wheels need a fixed version to install the wheels automatically.
-PYLGUI_VERSION = "1.29"
+PYGLUI_VERSION = "1.29"
 
 requirements = [
     "numpy",
@@ -13,8 +13,8 @@ requirements = [
     # Install pyglui from source for Unix and from wheel for Windows. Note we install
     # via git, not from archive, as pyglui contains submodules which are not included in
     # archive, but will be checked out when installing via git.
-    f'pyglui @ git+https://github.com/pupil-labs/pyglui.git@v{PYLGUI_VERSION} ; platform_system != "Windows"',
-    f'pyglui @ https://github.com/pupil-labs/pyglui/releases/download/v{PYLGUI_VERSION}/pyglui-{PYLGUI_VERSION}-cp36-cp36m-win_amd64.whl ; platform_system == "Windows"',
+    f'pyglui @ git+https://github.com/pupil-labs/pyglui.git@v{PYGLUI_VERSION} ; platform_system != "Windows"',
+    f'pyglui @ https://github.com/pupil-labs/pyglui/releases/download/v{PYGLUI_VERSION}/pyglui-{PYGLUI_VERSION}-cp36-cp36m-win_amd64.whl ; platform_system == "Windows"',
 ]
 
 package = "pupil_invisible_monitor"
