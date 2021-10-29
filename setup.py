@@ -9,12 +9,8 @@ requirements = [
     "numpy",
     "glfw>=1.8.4",
     "PyOpenGL",
+    "pyglui",
     "ndsi",
-    # Install pyglui from source for Unix and from wheel for Windows. Note we install
-    # via git, not from archive, as pyglui contains submodules which are not included in
-    # archive, but will be checked out when installing via git.
-    f'pyglui @ git+https://github.com/pupil-labs/pyglui.git@v{PYGLUI_VERSION} ; platform_system != "Windows"',
-    f'pyglui @ https://github.com/pupil-labs/pyglui/releases/download/v{PYGLUI_VERSION}/pyglui-{PYGLUI_VERSION}-cp36-cp36m-win_amd64.whl ; platform_system == "Windows"',
 ]
 
 package = "pupil_invisible_monitor"
