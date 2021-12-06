@@ -83,8 +83,11 @@ datas = [
     (ui.get_pupil_icons_font_path(), "pyglui/"),
 ]
 
+runtime_hooks = []
 if current_platform == SupportedPlatform.linux:
     datas.append(("icons/*.svg", "."))
+elif current_platform == SupportedPlatform.macos:
+    runtime_hooks = ["find_opengl_bigsur.py"]
 
 a = Entrypoint(
     "pupil-invisible-monitor",
@@ -94,8 +97,8 @@ a = Entrypoint(
     binaries=binaries,
     datas=datas,
     hiddenimports=["pyzmq", "pyre"] + pyglui_hidden_imports,
+    runtime_hooks=runtime_hooks,
     # hookspath=[],
-    # runtime_hooks=[],
     # excludes=[],
     # win_no_prefer_redirects=False,
     # win_private_assemblies=False,
