@@ -16,15 +16,21 @@ def sign_app(deployment_root: Path):
         logger.info(f"Deleting {DS_Store}")
         DS_Store.unlink()
 
-    sign_cmd = (
-        "codesign "
-        "--force "
-        "--verify "
-        "--verbose "
-        f"-s '{cert}' "
-        f"--deep '{bundle_app_dir}'"
-    )
-    if call(sign_cmd, shell=True) == 0:
+    sign_cmd = [
+        "codesign",
+        "--force",
+        "--verify",
+        "--verbose=4",
+        "--options",
+        "runtime",
+        "--entitlements",
+        "entitlements.plist",
+        "-s",
+        cert,
+        "--deep",
+        bundle_app_dir,
+    ]
+    if call(sign_cmd) == 0:
         logger.info("Codesigning successful")
     else:
         logger.warning("Codesigning failed!")
