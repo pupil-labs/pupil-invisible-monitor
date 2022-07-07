@@ -1,3 +1,11 @@
+### Deprecation Warning
+
+**This application has been deprecated**.
+
+We recommend using our [new web-browser-based Monitor application](https://docs.pupil-labs.com/invisible/how-tos/data-collection-with-the-companion-app/monitor-your-data-collection-in-real-time.html) instead.
+
+---
+
 # Pupil Invisible Monitor
 <a
 href="https://pupil-labs.com/products/invisible"
